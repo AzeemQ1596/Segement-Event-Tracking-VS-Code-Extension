@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 			});	
 
         });
-
+	console.log("hello");
 	let disposable = vscode.commands.registerCommand('segment-event-tracking.track', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
