@@ -1,0 +1,19 @@
+{
+    "yo mamma": {
+      "prefix": ["analytics."],
+      "body": ["yo mama"],
+      "description": "yo mamma",
+      "ine Number": " ",
+      "file Name": " ",
+      "event Type": " "
+    },
+
+    "segsfgdfg2": {
+        "prefix": ["analytics."],
+        "body": ["yo mama 2"],
+        "description": "yo mamma2",
+        "line Number": " ",
+        "file Name": " ",
+        "event Type": " "
+      }
+  }
