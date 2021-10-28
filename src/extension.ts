@@ -1,7 +1,6 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 
-import { TextEncoder } from 'util';
+import { error } from 'console';
+import { openStdin } from 'process';
 import * as vscode from 'vscode';
 import { ExtensionContext, StatusBarAlignment, window, StatusBarItem, Selection, workspace, TextEditor, commands } from 'vscode';
 
@@ -17,64 +16,71 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	
-	/*
-	if (workspace.workspaceFolders === undefined) { return; };
-        // Find all the php files to process
-    workspace.findFiles('/*.js', '').then(files => {
-            
-        var filePaths: string[] = [];
-    	// Get the objects path value for the current file system
-        files.forEach(file => { filePaths.push(file.fsPath); });
-        paths = filePaths;
-			
-		filePaths.forEach(f => { 
-			workspace.openTextDocument(f).then(doc => {
-				let text = doc.getText();
-				searchText(text);
-			});
-
-	});*/
-	let filePaths = await getFiles();
-	//readFiles(filePaths);
-	let disposable = vscode.commands.registerCommand('segment-event-tracking.track', () => {
+	let disposable = vscode.commands.registerCommand('segment-event-tracking.track', async() => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		vscode.window.showInformationMessage(`${filePaths}`);
-	});
+		new vscode.SnippetString("sd");
+		const os = require('os');
+		let oS = os.platform();
+		console.log(oS);
+		if (oS === "win32") {
+			const homedir = require('os').homedir();
+			let snippetPath = homedir.toString().concat("\\.vscode\\extensions");
+			console.log(snippetPath);
+			
+		};
+		
+			await getFiles().then(async filePaths => {
+			if(filePaths === null) {
 
+				vscode.window.showErrorMessage("Error! Workspace is undefined. Please select a workspace.");
+				console.error("Error! Workspace is undefined. Please select a workspace.");
+			}
+			else {
+					vscode.window.showInformationMessage(`${filePaths}`);
+					let documentText = await readFiles(filePaths);
+					for(var index = 0; index < documentText.length; index++){
+
+						
+					};
+				};
+				
+			});
+			
+	});
 	context.subscriptions.push(disposable);
 }
 
-async function getFiles() {
+async function getFiles(): Promise<string[] | null> {
 
 	let paths: string[];
-		
-    return workspace.findFiles('**/*.js', '').then(files => {
+	return workspace.findFiles('**/*.js', '').then(files => {
             
         var filePaths: string[] = [];
     	// Get the objects path value for the current file system
-        files.forEach(file => { filePaths.push(file.fsPath); });
-        return filePaths;
+		files.forEach(file => { filePaths.push(file.fsPath); });
+		if(filePaths.length === 0) {
+			return null;
+		}
+		else {
+			console.log("JavaScript Files found");
+        	return filePaths;
+			}
+		});
+	}
 
-	});
-	
+async function readFiles(paths: string[]): Promise<string[]> {
+
+	let docText: string[] = [];
+	for(var index = 0; index < paths.length; index++) { 
+
+		let doc = await workspace.openTextDocument(paths[index]);
+		docText.push(doc.getText());	
+	};
+	return docText;
+
 }
 /*
-function readFiles(paths: string[]) {
-
-	paths.forEach(f => { 
-		workspace.openTextDocument(f).then(doc => {
-			let text = doc.getText();
-			searchText(text);
-		});
-	});
-}
-
-function writeToSnippet(code: string, lineNo: number, fileName: string, event: string) {
-	
-	
-}
-
 
 function searchText(docText: string): string[] | false {
     
@@ -101,8 +107,14 @@ function searchText(docText: string): string[] | false {
 	}
     
     }
-    return code;
+ 
 }
+
+function writeToSnippet(code: string, lineNo: number, fileLocation: string, event: string) {
+	
+	
+}
+
 /*
 	// 2) Check if it is a segment call by checking:
 	// 3) analytics.__name__({})
