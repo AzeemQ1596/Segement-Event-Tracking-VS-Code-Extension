@@ -1,6 +1,5 @@
-
-import { error } from 'console';
-import { openStdin } from 'process';
+var fs = require('fs');
+import { TextEncoder } from 'util';
 import * as vscode from 'vscode';
 import { ExtensionContext, StatusBarAlignment, window, StatusBarItem, Selection, workspace, TextEditor, commands } from 'vscode';
 
@@ -19,19 +18,23 @@ export async function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('segment-event-tracking.track', async() => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		new vscode.SnippetString("sd");
+	
 		const os = require('os');
+		const fs = require('fs');
 		let oS = os.platform();
 		console.log(oS);
-		if (oS === "win32") {
-			const homedir = require('os').homedir();
-			let snippetPath = homedir.toString().concat("\\.vscode\\extensions");
-			console.log(snippetPath);
-			
-		};
 		
-			await getFiles().then(async filePaths => {
-			if(filePaths === null) {
+		const homedir = require('os').homedir();
+		let snippetPath = homedir.toString().concat("\\code\\segment-event-tracking\\segment_snippets.json");
+		let snippetUri = vscode.Uri.file(snippetPath);
+		const encoder = new TextEncoder();
+		//workspace.fs.writeFile(snippetUri, encoder.encode(" "));
+		require('fs').writeFileSync(snippetPath, "sgdihs;fsd");	
+		
+		
+
+		await getFiles().then(async filePaths => {
+		if(filePaths === null) {
 
 				vscode.window.showErrorMessage("Error! Workspace is undefined. Please select a workspace.");
 				console.error("Error! Workspace is undefined. Please select a workspace.");
@@ -80,6 +83,7 @@ async function readFiles(paths: string[]): Promise<string[]> {
 	return docText;
 
 }
+
 /*
 
 function searchText(docText: string): string[] | false {
