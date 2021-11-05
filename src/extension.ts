@@ -31,8 +31,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		//workspace.fs.writeFile(snippetUri, encoder.encode(" "));
 		require('fs').writeFileSync(snippetPath, "sgdihs;fsd");	
 		
-		
-
 		await getFiles().then(async filePaths => {
 		if(filePaths === null) {
 
@@ -43,8 +41,8 @@ export async function activate(context: vscode.ExtensionContext) {
 					vscode.window.showInformationMessage(`${filePaths}`);
 					let documentText = await readFiles(filePaths);
 					for(var index = 0; index < documentText.length; index++){
-
 						
+						searchText(documentText[index]);
 					};
 				};
 				
@@ -84,164 +82,115 @@ async function readFiles(paths: string[]): Promise<string[]> {
 
 }
 
-/*
+async function searchText(docText: string) {
 
-function searchText(docText: string): string[] | false {
-    
-    let segment_indicator = /(analytics.)((.|\n|))*?(;\n)/;
+	//let obj = JSON.parse(jsonString);
+	// 1) Identify
+	interface identify_obj {
+		userId : string;
+		type : string;
+		file_name : number;
+		line_beginning : number;
+		line_end : string;
+	}
 
-	// for each line in the text file
-    let code: string[];
-	// replace file with an actual value
-    let searchResult = segment_indicator.exec(docText);
-	if (searchResult) {
-		// 1) Write a snippet to find a chunk of code to send to the function
-		for(let s of searchResult){
+	// 2) Group
+	interface group_obj {
+		groupId : string;
+		type : string;
+		file_name : number;
+		line_beginning : number;
+		line_end : string;
+	}
+
+	// 1&2) Both can have traits that we can add 
+	interface trait_obj {
+		trait : string
+	}
+
+	// 3) Track
+	interface track_obj {
+		event_name : string;
+		type : string;
+		file_name : number;
+		line_beginning : number;
+		line_end : string;
+		property : string[];
+	}
+
+	// 4) Page
+	interface page_obj {
+		event_name : string;
+		category : string;
+		type : string;
+		file_name : number;
+		line_beginning : number;
+		line_end : string;
+		property : string[];
+	}
+
+	
+	// regex to see if it's a valid segment event
+	let segment_indicator = /(analytics.)((.|\n|))*?(;\n)/g;
+	
+	// let code be a string 
+	let code: string[];
+	
+	// see if the code we brought in; docText fits the regex
+	let searchResult = docText.match(segment_indicator);
+	console.log(`the search result code blocK: " + ${searchResult}`);
+	
+	let events: string[]; // declaring an array to hold event details
+
+	// 1. find what kind of segment event it is and if it matches the format of a segment event
+	// 2. if yes, then cut the code down to the properties only
+	// 3. using match() function, find a list of all the properties or if it is empty
+	// 4. if there's more than 0 properties, then add them into a data structure (linked list)
+	let is_identify = /(analytics.identify)((.|\n|))*?(;\n)/;
+	let is_track = /(analytics.track)((.|\n|))*?(;\n)/;
+	let is_page = /(analytics.page)((.|\n|))*?(;\n)/;
+	let is_group = /(analytics.group)((.|\n|))*?(;\n)/;
+	let event_name: string;
+	// if the code has the template of a generic segment event, we now check if they are one of the four types of segment events:
+	searchResult?.forEach(item => {
+
+		if (is_identify.exec(item)) {
+			return null;
+
+		} if (is_track.exec(item)) {
+			// Output: an array and return with: event name, properties, event type
+			// so we can now find the file name and line number
 		
-		// 2) send to validate_segment_code to check if it is a segment event
-		if (validate_segment_code(s) == 'identify') {
-			// send to check for event names
-			if (check_identify(s) == true) {
-				// send to determine the id and event properties
-			}
-		} (if validate_segment_code(s) == false) {
-			return false;
-		}
-
-	}
-    
-    }
- 
-}
-
-function writeToSnippet(code: string, lineNo: number, fileLocation: string, event: string) {
-	
-	
-}
-
-/*
-	// 2) Check if it is a segment call by checking:
-	// 3) analytics.__name__({})
-	// 4) if yes, then extract five things:
-	//       a) type of event
-	//       b) event name or id
-	//       c) properties
-	//       d) line where this segment event is called
-	//       e) what file this is in 
-
-
-
-// Javascript program for checking
-// balanced brackets
- 
-// Function to check if brackets are balanced
-function validate_segment_code(code: string) {
-	
-    let segment_type = ''
- 
-    // First, see if it's a segment event by checking if it has a segment spec type
-    for(let i = 0; i < code.length; i++)
-    {
-
-		if (i==0 && code[i]=='.') {
-			// check if the next word is: identify, track, group, page
-			if (code[i+1:i+9] == 'identify') {
-				segment_type = 'identify';
-				return segment_type;
-			} if (code[i+1:i+6] == 'track') {
-				segment_type = 'track';
-				return segment_type;
-			} if (code[i+1:i+6] == 'group') {
-				segment_type = 'group';
-				return segment_type;
-			} if (code[i+1:i+5] == 'page') {
-				segment_type = 'page';
-				return segment_type;
-			} else {
-				return false // it is not a segment event
-			}
-
-        }
-    }
- 
-
-
-// 1.1. Identify
-// Case 1: Common
-/*
-	// Case 1: Common
-	analytics.identify(“_id__”, {
-		“1”: “example”,
-		“2”: “example”
-		}
-		)
-		;
-	
-	
-	// Case 2: Edge case: anonymous user
-	analytics.identify({
-	“1”: “example”,
-	“2”: “example”,
-	“3”: “example”
-	}
-	);
-*/
-/*
-function check_identify(code: string) {
-	// code that starts with an open bracket
-
-	let stack = [];
-
-/*
-		// Case 1: Common
-		analytics.identify(“_id__”, {
-			“1”: “example”,
-			“2”: “example”
-			}
-			)
-			; 
-
-    for(let i = 0; i < code.length; i++) {
-		let x = code[i];
-
-		// Base case: code at i=0 must be '('
-		if (i==0 && x=='(') {
-			stack.push(x);
-			continue;
-		}
-
-		if (x == '{')
-		{
-			// Push the element in the stack
-			stack.push(x);
-			continue;
-		}
-
-		// If current character is not opening
-		// bracket, then it must be closing.
-		// So stack cannot be empty at this point.
-		if (stack.length == 0)
-			return false;
+			// 1) Find event name or if it's null
+			let track_event_indicator = /(?<=\(\").+?(?=\"\,)/; // regex to manipulate for segment event name
 			
-		let check;
-		switch (x){
-		case ')':
-			check = stack.pop();
-			if (check == '{')
-				return false;
-			break;
+			let name = track_event_indicator.exec(item); // manipulating for segment event name and storing it in event_name
+			console.log(`The event name we extracted by using regex: ${name}`);
+			//track_event.push(event_name); // adding the event name to the array
+			//console.log("The track event array after adding the event name: " + track_event);
+			return name;
 
-		case '}':
-			check = stack.pop();
-			if (check == '(')
-				return false;
-			break;
 		}
 
-	// Check Empty Stack
-	return (stack.length == 0);
-}
-}
-*/
+			//let obj: MyObj = JSON.parse('{ "eventName": e}') taking this out for now
+			// 2) Find properties
+			/*
+			for (let i = 0; i < code.length; i++) {
+				
+				i++
+			}*/
+			
+		if (is_page.exec(docText)) {
+			return null;
+
+		} if (is_group.exec(docText)) {
+			return null;
+
+		}
+	
+	});
+	
+	}
+
 // this method is called when your extension is deactivated
 export function deactivate() {}
