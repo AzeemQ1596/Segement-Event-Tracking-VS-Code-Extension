@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 var fs = require('fs');
 import { TextEncoder } from 'util';
 import * as vscode from 'vscode';
