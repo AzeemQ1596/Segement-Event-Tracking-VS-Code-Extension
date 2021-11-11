@@ -19,12 +19,6 @@
 				"command": "segment-event-tracking.track",
 				"title": "Track Segment Events"
 			}
-		],
-		"snippets": [
-			{
-				"language": "javascript",
-				"path": "./segment_snippets.json"
-			}
 		]
 	},
 	
