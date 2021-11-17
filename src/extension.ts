@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-var fs = require('fs');
-import { AnyPtrRecord } from 'dns';
-import { TextEncoder } from 'util';
 import * as vscode from 'vscode';
 import { ExtensionContext, StatusBarAlignment, window, StatusBarItem, Selection, workspace, TextEditor, commands } from 'vscode';
 
@@ -33,8 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		//workspace.fs.writeFile(snippetUri, encoder.encode(" "));
 		require('fs').writeFileSync(snippetPath, "azeem");	*/
 		
-
-
+		
 		await getFiles().then(async filePaths => {
 		if(filePaths === null) {
 
@@ -42,9 +38,8 @@ export async function activate(context: vscode.ExtensionContext) {
 				console.error("Error! Workspace is undefined. Please select a workspace.");
 			}
 			else {
-					vscode.window.showInformationMessage(`${filePaths}`);
+					//vscode.window.showInformationMessage(`${filePaths}`);
 					let documentText = await readFiles(filePaths);
-					
 					let wsPath: string;
 					let ws = workspace.workspaceFolders;
 					if(ws!== undefined) { 
@@ -52,49 +47,84 @@ export async function activate(context: vscode.ExtensionContext) {
 						wsPath = ws[0].uri.fsPath;
 						
 
-						vscode.window.showInformationMessage(`${wsPath}`);
-					
-						require('fs').writeFileSync(wsPath.concat("\\segmentEventTable.json"), "{ \n", function (err: any) {
-							if (err) {throw err;}
+						//vscode.window.showInformationMessage(`${wsPath}`);
+						var event_array: any[] = [];
+						var snippet_array: any = [];
+
+						require('fs').writeFileSync(wsPath.concat("\\segmentEventTable.json"), "", function (err: any) {
+							if (err) {
+								vscode.window.showErrorMessage("Error! Could not create segmentEventTable.json file");
+								throw err;}
 							console.log('File is created successfully.'); });
 						
-						require('fs').writeFileSync(wsPath.concat("\\.vscode\\segmentSnippet.code-snippets"), "{ \n", function (err: any) {
-							if (err) {throw err;}
+						require('fs').writeFileSync(wsPath.concat("\\.vscode\\segmentSnippet.code-snippets"), "{", function (err: any) {
+							if (err) {
+								vscode.window.showErrorMessage("Error! Could not edit segmentSnippet.code-snippets file. Make sure .vscode folder exists in your folder");
+								throw err;}
 							console.log('File is created successfully.'); });
-
-						for(var index = 0; index < documentText.length; index++){
 						
-							let e = searchText(documentText[index], filePaths[index]);
-							
+						var emptyFlag = 0;
+						var emptyBool: boolean;
+						var length = 0;
+						
+						for(var index = 0; index < documentText.length; index++) {
+						
+							let code = searchCode(documentText[index]);
 
-							require('fs').appendFile(wsPath.concat("\\.vscode\\segmentSnippet.code-snippets"), `${e}`, function (err: any) {
-								if (err) {throw err;}
-								console.log('File is created successfully.'); });
-							
-							if(index!==documentText.length) {
-								require('fs').appendFile(wsPath.concat("\\.vscode\\segmentSnippet.code-snippets"), ",", function (err: any) {
-								if (err) {throw err;}
-								console.log('File is created successfully.'); });
+							if(code!== null) {
+								
+								let cleanedFilePath = filePaths[index].match(/(?<=\\)(?:.(?!\\))+$/);
+								let snippet = extractSnippet(code, cleanedFilePath);
+								let events = exportToJson(code, cleanedFilePath);
+								
+								snippet_array = snippet_array.concat(snippet);
+								event_array = event_array.concat(events);
+
+							}
+							else {
+								emptyFlag = emptyFlag + 1;
 							}	
 						};
+						if (emptyFlag === documentText.length) {
+					
+							vscode.window.showErrorMessage("No segment functions found in workspace files");
+							console.log("No segment functions found in workspace files");
+						}
+						else {
 						
-						require('fs').appendFile(wsPath.concat("\\.vscode\\segmentSnippet.code-snippets"), "}", function (err: any) {
-							if (err) {throw err;}
-							console.log('File is created successfully.'); });
-						//vscode.window.showInformationMessage(`${event_array}`);
+							let eventJson = JSON.stringify(event_array);
+							length = length + event_array.length;
+							require('fs').appendFile(wsPath.concat("\\segmentEventTable.json"), eventJson, function (err: any) {
+								if (err) {
+									vscode.window.showErrorMessage("Error! Could not edit segmentEventTable.json file");
+									throw err;}
+								console.log('File is created successfully.'); });
+					
+								require('fs').appendFile(wsPath.concat("\\.vscode\\segmentSnippet.code-snippets"), `${snippet_array} }`, function (err: any) {
+									if (err) {
+										vscode.window.showErrorMessage("Error! Could not edit segmentSnippet.code-snippets file");
+										throw err;}
+									console.log('File is created successfully.'); });
+							
+							
+							console.log(`${event_array.length}`);
+						}
+						
 					}
-			
+				
 				};
 				
 			});	
+			
 	});
+	vscode.window.showInformationMessage(`Success! segment calls found. segmentEventTable.json and segmentEventTable.json files created`);	
 	context.subscriptions.push(disposable);
 }
 
 async function getFiles(): Promise<string[] | null> {
 
 	let paths: string[];
-	return workspace.findFiles('**/*.js', '').then(files => {
+	return workspace.findFiles('**/*.js' || '**/*.jsx', '').then(files => {
             
         var filePaths: string[] = [];
     	// Get the objects path value for the current file system
@@ -117,23 +147,47 @@ async function readFiles(paths: string[]): Promise<string[]> {
 		let doc = await workspace.openTextDocument(paths[index]);
 		docText.push(doc.getText());	
 	};
-	return docText;
-
+	return docText;	
 }
 
-function searchText(docText: string, filePaths: string): string[] {
+function searchCode(docText: string): RegExpMatchArray | null {
 
-	//let obj = JSON.parse(jsonString);
-	
-	// regex to see if it's a valid segment event
-	let segment_indicator = /(analytics.)((.|\n|))*?(;\n)/g;
-	
-	let eventArray: string[] = [];  // declaring an array to hold event details
-	
+		// regex to see if it's a valid segment event
+	//let segment_indicator = /(analytics.)((.|\n|))*?(\);)/gm;
+	let segment_indicator = new RegExp(/(analytics.)((.|\n|))*?(\);)/, 'g');
 	// see if the code we brought in; docText fits the regex
-	let searchResult = docText.match(segment_indicator);
-	//console.log(`the search result code blocK: " + ${searchResult}`);
+	let searchResult: RegExpMatchArray | null;
+	let newDocText = docText.replace(/(\r\n|\n|\r)/g, " ");
+	searchResult = newDocText.match(segment_indicator);
+	//console.log(`${searchResult}`);
+	return searchResult;
+}
+
+function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null): string[] {
 	
+	let snippetArray: string[] = [];  // declaring an array to hold event details
+	let eventName_indicator = /(?<=\(\").+?(?=\")/g;
+	let eventType_indicator = /(analytics)((.|\n|))*?(?=\()/g;
+	vscode.window.showInformationMessage("is this working?");
+	// if the code has the template of a generic segment event, we now check if they are one of the four types of segment events:
+	code?.forEach(c => {
+		
+		let name = c.match(eventName_indicator); // manipulating for segment event name and storing it in event_name
+		let eventType = c.match(eventType_indicator);
+		let cleanedCode = c.replace(/"/g, "'");
+		let snip = 
+			`"${name} + ${filePath}": {
+				"prefix": ["${eventType}"],
+				"body": "${cleanedCode}"
+			   }`;
+
+		snippetArray.push(snip);
+	});		
+	return snippetArray;
+	}
+
+function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null): any[] {
+
 	// 1. find what kind of segment event it is and if it matches the format of a segment event
 	// 2. if yes, then cut the code down to the properties only
 	// 3. using match() function, find a list of all the properties or if it is empty
@@ -142,77 +196,30 @@ function searchText(docText: string, filePaths: string): string[] {
 	let is_track = /(analytics.track)((.|\n|))*?(;\n)/;
 	let is_page = /(analytics.page)((.|\n|))*?(;\n)/;
 	let is_group = /(analytics.group)((.|\n|))*?(;\n)/;
-	let event_name: string;
-	// if the code has the template of a generic segment event, we now check if they are one of the four types of segment events:
-	searchResult?.forEach(item => {
-		
-		let event_indicator = /(?<=\(\").+?(?=\"\,)/g;
-		let prop_indicator = /(?<={)((.|\n|))*?(?=})/g;
-
-		let name = item.match(event_indicator); // manipulating for segment event name and storing it in event_name
-		//console.log(`The event name we extracted by using regex: ${name}`);
-
-		if (is_identify.exec(item)) {
-			
-			let snip = 
-			   `${escape(`${item}`)}: {
-				"prefix": ["analytics"],
-				"body": ${escape(`${item}`)},
-				"event_name": ${escape(`${name?.toString()}`)},
-				"type" : "identify",
-				"file_path" : ${escape(`${filePaths}`)},
-				"line_number" : " "
-			   }`;			
-				
-			eventArray.push(snip);
 	
-		} if (is_track.exec(item)) {
-			
-			let prop = item.match(prop_indicator);
-			let newItem = (item.replace(/"/g, "'")).replace(/(\r\n|\n|\r)/gm, "");
-			let snip = 
-			`"${name?.toString()}": {
-				"prefix": ["analytics"],
-				"body": "${newItem}",
-			   }`;
-			
-			eventArray.push(snip);
-
-		}
-
-		if (is_page.exec(item)) {
-			let prop = item.match(prop_indicator);
-			let snip = 
-			  `${escape(`${item}`)}: {
-				"prefix": ["analytics"],
-				"body": ${escape(`${item}`)},
-				"event_name": ${escape(`${name?.toString()}`)},
-				"type" : "identify",
-				"property" : ${escape(`${prop?.toString()}`)},
-				"file_path" : ${escape(`${filePaths}`)},
-				"line_number" : " "
-			   }`;
-			
-			eventArray.push(snip);
-
-		} if (is_group.exec(item)) {
-			
-			let snip = 
-			`${escape(`${item}`)}: {
-				"prefix": ["analytics"],
-				"body": ${escape(`${item}`)},
-				"event_name": ${escape(`${name?.toString()}`)},
-				"type" : "identify",
-				"file_path" : ${escape(`${filePaths}`)},
-				"line_number" : " "
-			   }`;
-
-			eventArray.push(snip);
-		}
-
-	});	
-	return eventArray;
-	}
-
+	let eventName_indicator = /(?<=\(\").+?(?=\"\,)/;
+	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\}\))/g;
+	
+	let event_array: any[] = [];
+	
+	code?.forEach(c => {
+		let cleanedCode = c.replace(/"/g, "'");
+		let name = c.match(eventName_indicator);
+		let prop = cleanedCode.match(prop_indicator);
+		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/);
+		let obj = {		
+			eventName: name?.toString(),
+			code: cleanedCode,
+			type: type?.toString(),
+			property: prop?.toString(),
+			filePath: filePath?.toString()
+		};
+		
+		event_array.push(obj);
+	});
+	
+	//console.log(`Event Array ${event_array}`);
+	return event_array;
+}
 // this method is called when your extension is deactivated
 export function deactivate() {}

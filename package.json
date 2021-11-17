@@ -17,7 +17,7 @@
 		"commands": [
 			{
 				"command": "segment-event-tracking.track",
-				"title": "Track Segment Events"
+				"title": "Segment Tracker: Track Segment Events"
 			}
 		]
 	},
