@@ -1,0 +1,206 @@
+/*****************************************************************************/
+/* Some landscape phones and larger (576px) */
+/*****************************************************************************/
+@media only screen and (min-width: 576px) {
+    /***********/
+    /* Colours */
+    /***********/
+    #site-title, header nav a, header .social, form {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
+    
+    header nav a {
+        transition: color 0.5s;
+        transition: background-color 2s;
+    }    
+    
+    header nav a:hover {
+        color: #000;
+        background-color: rgba(255, 255, 255, 0.75);
+    }
+
+    /***********/
+    /* Columns */
+    /***********/
+    .column-container {
+        display: flex;
+        flex-direction: row;
+    }
+    
+    .column-container .column { 
+        flex: 1;
+        background-color: #eee;        
+        padding: 16px;
+        margin-left: 8px;
+        margin-right: 8px;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    }
+    
+    
+    /**********/
+    /* Header */
+    /**********/
+    #hero-container {
+        position: relative;
+        height: 40vh;
+        min-height: 300px;
+        background-image: url("/~16saaq/a5/img/bee-collecting-pollen.jpg");        
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        transition: background-image 0.5s;
+    }
+    
+    #hero-container.bee {
+        background-image: url("/~16saaq/a5/img/bee-collecting-pollen.jpg");        
+    }
+
+    #hero-container.tractor {
+        background-image: url("/~16saaq/a5/img/field-and-tractors.jpg");        
+    }
+
+    #hero-container.meadow {
+        background-image: url("/~16saaq/a5/img/meadow.jpg");        
+    }
+    
+    #site-title, header nav, header .social {
+        position: relative;
+        z-index: 2;
+    }
+    
+    #logo {
+        z-index: 3;    
+    }    
+    
+    #hero-container .overlay {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #000;
+        display: none;
+        /*
+        opacity: 0;
+        transition: opacity 2s;
+        */
+    }
+    
+    #wordmark {
+        padding-left: 10%;
+    }
+
+    #site-title {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+
+    header nav a {
+        width: 150px;
+        padding-left: 10%;
+        padding-right: 16px;
+        border-right: 1px dotted rgba(255, 255, 255, 0.5);
+    }
+    
+    header .social {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding-left: 16px;
+        padding-right: 10%;
+        border-top: 1px dotted rgba(255, 255, 255, 0.5);
+        border-left: 1px dotted rgba(255, 255, 255, 0.5);        
+    }
+
+    header .social ul {
+        overflow: hidden;    
+    }
+    
+    header .social li {
+        float: left;
+    }
+    
+    /***********/
+    /* Content */
+    /***********/
+    article, main {
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+    
+    /***********/
+    /* Gallery */
+    /***********/
+    .thumbnail-gallery figure img {
+        height: 150px;
+    }    
+        
+    /**********/
+    /* Footer */
+    /**********/
+    footer {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+}
+
+
+/*****************************************************************************/
+/* Some tablets and larger (768px) */
+/*****************************************************************************/
+@media only screen and (min-width: 768px) {
+    #logo {
+        display: block;
+        width: 100px;
+        position: absolute;
+        top: 0;
+        right: 10%;
+    }
+
+    #unit-signature {
+        width: 600px;
+    }
+
+    #address, #phone-and-email {
+        margin-left: 298px;    
+    }
+}
+
+
+/*****************************************************************************/
+/* Some desktops and larger (992px) */
+/*****************************************************************************/
+@media only screen and (min-width: 992px) {
+    #site-title {
+        font-size: 2.5rem;    
+    }
+    
+    h1 {
+        font-size: 2rem; 
+    }
+    
+    h2  {
+        font-size: 1.75rem; 
+    }
+    
+    /***********/
+    /* Gallery */
+    /***********/
+    .thumbnail-gallery figure img {
+        height: 200px;
+    }        
+}
+
+
+/*****************************************************************************/
+/* Desktops and larger (1200px) */
+/*****************************************************************************/
+@media only screen and (min-width: 1200px) {   
+    footer {
+        background-image: url("/~16saaq/a5/img/fas-diamonds.png");
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: auto 100%;
+    }
+}

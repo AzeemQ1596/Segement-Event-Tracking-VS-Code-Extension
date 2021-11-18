@@ -1,0 +1,52 @@
+/*****************************************************************************/
+/* These icons are from Font Awesome (https://fontawesome.com/) via the 
+/* IcoMoon App (https://icomoon.io/app/#/select).
+/*****************************************************************************/
+@font-face {
+    font-family: 'icomoon';
+    src:    url('fonts/icomoon.eot?740dj8');
+    src:    url('fonts/icomoon.eot?740dj8#iefix') format('embedded-opentype'),
+            url('fonts/icomoon.ttf?740dj8') format('truetype'),
+            url('fonts/icomoon.woff?740dj8') format('woff'),    url('fonts/icomoon.svg?740dj8#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    font-size: 1em;
+    line-height: 1.25;
+    display: inline-block;
+    padding-right: 0.5em;
+}
+
+.icon-twitter-square:before {
+    content: "\f081";
+}
+
+.icon-facebook-square:before {
+    content: "\f082";
+}
+
+.icon-phone-square:before {
+    content: "\f098";
+}
+
+.icon-envelope:before {
+    content: "\f0e0";
+}
+
+.sr-only {
+    position: fixed;
+    top: -9999px;
+}
+

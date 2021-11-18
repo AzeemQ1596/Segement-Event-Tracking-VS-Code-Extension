@@ -1,0 +1,49 @@
+{"sales_account_connected + thumbnail-gallery.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('sales_account_connected', {     plan: 'shopify',     accountType: 'sales'   });"
+			   },"2sales_account_connected + thumbnail-gallery.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('2sales_account_connected', {     plan: 'spotify',     accountType: 'logistics'   });"
+			   },"3sales_account_connected + thumbnail-gallery.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('3sales_account_connected', {     plan: 'spotify',     accountType: 'logistics'   });"
+			   },"4sales_account_connected + thumbnail-gallery.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('4sales_account_connected', {     plan: 'spotify',     accountType: 'logistics'   });"
+			   },"page1 + thumbnail-gallery.js": {
+				"prefix": ["analytics.page"],
+				"body": "analytics.page('page1', {     plan: 'premium',     accountType: 'pagetype'   });"
+			   },"10sales_account_connected + jquery-3.4.1.min.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('10sales_account_connected',  { plan: 'spotify', accountType: 'logistics'});"
+			   },"11sales_account_connected + jquery-3.4.1.min.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('11sales_account_connected',      { plan: 'spotify', accountType: 'logistics'});"
+			   },"15sales_account_connected + hologram-projection.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('15sales_account_connected',  { plan: 'spotify', accountType: 'logistics'});"
+			   },"logistics + header-slideshow.js": {
+				"prefix": ["analytics.group"],
+				"body": "analytics.group('logistics');"
+			   },"3sales_account_connected + header-slideshow.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('3sales_account_connected', {     plan: 'spotify',     accountType: 'logistics'   });"
+			   },"user + header-slideshow.js": {
+				"prefix": ["analytics.identify"],
+				"body": "analytics.identify('user');"
+			   },"7sales_account_connected + form-validation.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('7sales_account_connected', {      plan: 'spotify', accountType: 'logistics'});"
+			   },"8sales_account_connected + form-validation.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('8sales_account_connected', { plan: 'spotify',accountType: 'logistics'});"
+			   },"9sales_account_connected + form-validation.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('9sales_account_connected', {          plan: 'spotify', accountType: 'logistics'});"
+			   },"finance + form-validation.js": {
+				"prefix": ["analytics.group"],
+				"body": "analytics.group('finance');"
+			   },"page2 + form-validation.js": {
+				"prefix": ["analytics.page"],
+				"body": "analytics.page('page2');"
+			   } }

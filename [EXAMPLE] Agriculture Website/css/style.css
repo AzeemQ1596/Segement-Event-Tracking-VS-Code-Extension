@@ -1,0 +1,240 @@
+/*****************************************************************************/
+/* Colours */
+/* Blue: #002f5e */
+/* Crimson: #a91639 */
+/* Purple: #662d91 */
+/*****************************************************************************/
+body {
+    color: #000;
+}
+
+a, a:visited {
+    color: #002f5e;
+}
+
+header, footer, 
+header a, footer a,
+header a:visited, footer a:visited {
+    color: #fff;    
+}
+
+#site-title, header nav a, header .social {
+    background-color: #002f5e;
+}
+
+footer {
+    background-color: #a91639; 
+}
+
+blockquote, th {
+    background-color: #eee;         
+}
+
+/*****************************************************************************/
+/* Fonts */
+/*****************************************************************************/
+body {
+    /* Page 28 in the Identity Guidelines */
+    font-family: Palatino, "Book Antiqua", Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+h1, h2, h3, h4, h5, h6, nav, th {
+    /* Page 28 in the Identity Guidelines */
+    font-family: Open Sans, Lucida Grande, Lucida Sans Unicode, Helvetica Neue, Arial, sans-serif;
+}
+
+#site-title {
+    font-size: 2.0rem;    
+}
+
+h1 {
+    font-size: 1.75rem; 
+}
+
+h2  {
+    font-size: 1.625rem; 
+}
+
+h3, .social a i  {
+    font-size: 1.5rem; 
+}
+
+h4  {
+    font-size: 1.375rem; 
+}
+
+h5  {
+    font-size: 1.25rem; 
+}
+
+h6, nav ul li a  {
+    font-size: 1.125rem; 
+    
+}
+
+header nav { 
+    font-weight: bold;
+}
+
+.quote-source {
+    font-style: italic;    
+}
+
+header a { 
+    text-decoration: none;
+}
+
+header {
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.5);   
+}
+
+
+/*****************************************************************************/
+/*  General */
+/*****************************************************************************/
+html, body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+blockquote {
+    padding: 16px;    
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+.quote-source {
+    text-align: right;
+}
+
+table {
+	border-collapse: collapse;
+	margin-bottom: 32px;
+}
+
+th, td {
+	padding: 8px 16px;
+	border: 1px solid black;	
+}
+
+tfoot th {
+    text-align: left;    
+}
+
+
+/*****************************************************************************/
+/*  Header */
+/*****************************************************************************/
+header {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+#wordmark {
+    width: 200px;
+    padding: 8px 0 0 32px;    
+}
+
+#logo {
+    display: none;
+}
+
+#site-title {
+    padding: 16px 32px;
+    border-top: 1px dotted rgba(255, 255, 255, 0.5);
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+}
+
+header ul, header li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;   
+}
+
+header nav a {
+    display: block;
+    padding: 12px 32px;
+    margin: 0;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.5);  
+}
+
+input[type="search"] {
+    width: 100%;
+    border-radius: 3px;
+    padding: 6px 8px 6px 8px;
+}
+
+label, input[type="submit"] {
+    float: left;
+    opacity: 0;
+}
+
+input[type="search"] {
+    font: sans-serif;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+header .social {
+    padding: 8px 32px;
+}
+
+/*****************************************************************************/
+/*  Content */
+/*****************************************************************************/
+article, main {
+    margin: 32px 32px 64px 32px;
+}
+
+blockquote {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+
+/*****************************************************************************/
+/*  Thumbnail Gallery */
+/*****************************************************************************/
+.thumbnail-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.thumbnail-gallery figure {
+    flex: 0 0;
+    margin: 0;
+    padding: 8px;
+}
+
+.thumbnail-gallery figure img {
+    height: 100px;
+}
+
+
+/*****************************************************************************/
+/*  Footer */
+/*****************************************************************************/
+footer {
+    padding: 32px 32px 64px 32px;
+}
+
+#unit-signature {
+    width: 100%;
+}
+
+#phone-and-email {
+    margin: 0;
+    padding: 8px 0 0 0;
+    list-style-type: none;
+}
+
+#address, #phone-and-email {
+    margin-left: 49.2%;    
+}
+
+#copyright {
+    padding-top: 32px;    
+}
