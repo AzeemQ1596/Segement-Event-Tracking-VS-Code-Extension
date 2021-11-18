@@ -18,6 +18,10 @@
 			{
 				"command": "segment-event-tracking.track",
 				"title": "Segment Tracker: Track Segment Events"
+			},
+			{
+				"command": "segment-event-tracking.webview",
+				"title": "Segment Tracker: Show Segment Report"
 			}
 		]
 	},

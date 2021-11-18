@@ -14,22 +14,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	
-	let disposable = vscode.commands.registerCommand('segment-event-tracking.track', async() => {
+	let disposable1 = vscode.commands.registerCommand('segment-event-tracking.track', async() => {
 		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-	
-		const os = require('os');
-		const fs = require('fs');
-		let oS = os.platform();
-		console.log(oS);
-		/*
-		const homedir = require('os').homedir();
-		let snippetPath = homedir.toString().concat("\\code\\segment-event-tracking\\segment_snippets.json");
-		let snippetUri = vscode.Uri.file(snippetPath);
-		const encoder = new TextEncoder();
-		//workspace.fs.writeFile(snippetUri, encoder.encode(" "));
-		require('fs').writeFileSync(snippetPath, "azeem");	*/
-		
 		
 		await getFiles().then(async filePaths => {
 		if(filePaths === null) {
@@ -63,12 +49,14 @@ export async function activate(context: vscode.ExtensionContext) {
 								throw err;}
 							console.log('File is created successfully.'); });
 						
+							
 						var emptyFlag = 0;
 						var emptyBool: boolean;
 						var length = 0;
-						
+					
 						for(var index = 0; index < documentText.length; index++) {
-						
+							
+							
 							let code = searchCode(documentText[index]);
 
 							if(code!== null) {
@@ -85,6 +73,7 @@ export async function activate(context: vscode.ExtensionContext) {
 								emptyFlag = emptyFlag + 1;
 							}	
 						};
+						
 						if (emptyFlag === documentText.length) {
 					
 							vscode.window.showErrorMessage("No segment functions found in workspace files");
@@ -115,10 +104,16 @@ export async function activate(context: vscode.ExtensionContext) {
 				};
 				
 			});	
-			
+				
 	});
-	vscode.window.showInformationMessage(`Success! segment calls found. segmentEventTable.json and segmentEventTable.json files created`);	
-	context.subscriptions.push(disposable);
+	
+	context.subscriptions.push(disposable1);
+
+	let disposable2 = vscode.commands.registerCommand('segment-event-tracking.webview', () => {
+		vscode.window.showInformationMessage("`Success! segment calls found. segmentEventTable.json and segmentEventTable.json files created`");
+	});
+
+	context.subscriptions.push(disposable2);
 }
 
 async function getFiles(): Promise<string[] | null> {
@@ -219,6 +214,7 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 	});
 	
 	//console.log(`Event Array ${event_array}`);
+	
 	return event_array;
 }
 // this method is called when your extension is deactivated
