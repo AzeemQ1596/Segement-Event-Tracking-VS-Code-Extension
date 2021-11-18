@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as vscode from 'vscode';
 import { ExtensionContext, StatusBarAlignment, window, StatusBarItem, Selection, workspace, TextEditor, commands } from 'vscode';
-
+import { getWebviewContent } from './makeWebview.js';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
@@ -95,7 +95,6 @@ export async function activate(context: vscode.ExtensionContext) {
 										throw err;}
 									console.log('File is created successfully.'); });
 							
-							
 							console.log(`${event_array.length}`);
 						}
 						
@@ -110,9 +109,17 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable1);
 
 	let disposable2 = vscode.commands.registerCommand('segment-event-tracking.webview', () => {
-		vscode.window.showInformationMessage("`Success! segment calls found. segmentEventTable.json and segmentEventTable.json files created`");
-	});
-
+		
+		const panel = vscode.window.createWebviewPanel(
+			'catCoding',
+			'Cat Coding',
+			vscode.ViewColumn.One,
+			{}
+		  );
+	
+		  // And set its HTML content
+		  panel.webview.html = getWebviewContent();
+		});
 	context.subscriptions.push(disposable2);
 }
 
