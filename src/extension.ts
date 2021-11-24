@@ -51,7 +51,6 @@ export async function activate(context: vscode.ExtensionContext) {
 						
 							
 						var emptyFlag = 0;
-						var emptyBool: boolean;
 						var length = 0;
 					
 						for(var index = 0; index < documentText.length; index++) {
@@ -71,7 +70,7 @@ export async function activate(context: vscode.ExtensionContext) {
 							}
 							else {
 								emptyFlag = emptyFlag + 1;
-							}	
+							};	
 						};
 						
 						if (emptyFlag === documentText.length) {
@@ -95,11 +94,13 @@ export async function activate(context: vscode.ExtensionContext) {
 										throw err;}
 									console.log('File is created successfully.'); });
 							
+							vscode.window.showInformationMessage(`Success! ${event_array.length} segment events found`);
+							console.log(`Success!${event_array.length} segment events found`);
 							console.log(`${event_array.length}`);
-						}
+						};
 						
-					}
-				
+					};
+					
 				};
 				
 			});	
@@ -161,55 +162,91 @@ function searchCode(docText: string): RegExpMatchArray | null {
 	let searchResult: RegExpMatchArray | null;
 	let newDocText = docText.replace(/(\r\n|\n|\r)/g, " ");
 	searchResult = newDocText.match(segment_indicator);
-	//console.log(`${searchResult}`);
+	console.log(`${searchResult}`);
 	return searchResult;
 }
 
 function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null): string[] {
 	
 	let snippetArray: string[] = [];  // declaring an array to hold event details
-	let eventName_indicator = /(?<=\(\").+?(?=\")/g;
+	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?<=\")|(?<=\'))/g;
 	let eventType_indicator = /(analytics)((.|\n|))*?(?=\()/g;
-	vscode.window.showInformationMessage("is this working?");
+	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\})/g;
 	// if the code has the template of a generic segment event, we now check if they are one of the four types of segment events:
 	code?.forEach(c => {
+		let cleanedCode = (c.replace(/"/g, "'")).replace(/\s/g,"");
 		
-		let name = c.match(eventName_indicator); // manipulating for segment event name and storing it in event_name
-		let eventType = c.match(eventType_indicator);
-		let cleanedCode = c.replace(/"/g, "'");
-		let snip = 
-			`"${name} + ${filePath}": {
+		let eventType = cleanedCode.match(eventType_indicator);
+		let name: RegExpMatchArray | null = [];
+		let prop = cleanedCode.match(prop_indicator) || "";
+		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/);
+		let snip: string = ``; 
+		if(type?.toString() === "page") {
+			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?<=\")|(?<=\'))/g);
+		}
+		else{
+			name = cleanedCode.match(eventName_indicator);
+		};
+		if(prop!=="") {
+			snip = `"${name} + ${prop} + ${filePath}": {
 				"prefix": ["${eventType}"],
 				"body": "${cleanedCode}"
 			   }`;
-
+		}
+		else {
+			snip = `"${name} + ${filePath}": {
+				"prefix": ["${eventType}"],
+				"body": "${cleanedCode}"
+			   }`;
+		};
+	
 		snippetArray.push(snip);
 	});		
 	return snippetArray;
 	}
 
+let min = 0;
+let max = 999;
 function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null): any[] {
 
 	// 1. find what kind of segment event it is and if it matches the format of a segment event
 	// 2. if yes, then cut the code down to the properties only
 	// 3. using match() function, find a list of all the properties or if it is empty
 	// 4. if there's more than 0 properties, then add them into a data structure (linked list)
+	/*
 	let is_identify = /(analytics.identify)((.|\n|))*?(;\n)/;
 	let is_track = /(analytics.track)((.|\n|))*?(;\n)/;
 	let is_page = /(analytics.page)((.|\n|))*?(;\n)/;
-	let is_group = /(analytics.group)((.|\n|))*?(;\n)/;
+	let is_group = /(analytics.group)((.|\n|))*?(;\n)/;*/
 	
-	let eventName_indicator = /(?<=\(\").+?(?=\"\,)/;
-	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\}\))/g;
+	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?<=\")|(?<=\'))/g;
+	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\})/g;
 	
 	let event_array: any[] = [];
 	
 	code?.forEach(c => {
-		let cleanedCode = c.replace(/"/g, "'");
-		let name = c.match(eventName_indicator);
+		
+		let cleanedCode = (c.replace(/"/g, "'")).replace(/\s/g,"");
+		let name: RegExpMatchArray | null = [];
 		let prop = cleanedCode.match(prop_indicator);
 		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/);
-		let obj = {		
+		let cat: RegExpMatchArray | null = [];
+		let id: string = "";
+		let obj: any = {};
+		if(type?.toString() === "page") {
+			cat = cleanedCode.match(eventName_indicator);
+			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?<=\")|(?<=\'))/g);
+		}
+		else{
+			name = cleanedCode.match(eventName_indicator);
+		};
+		if(name!== null && type!== null) {
+			id = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${Math.floor((Math.random() * (max - min) + min))}`);
+		}
+		
+			obj = {
+			eventID: id,
+			category: cat?.toString(),	
 			eventName: name?.toString(),
 			code: cleanedCode,
 			type: type?.toString(),

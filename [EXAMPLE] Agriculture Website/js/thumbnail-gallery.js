@@ -25,6 +25,7 @@ $(document).ready(function() {
     accountType: "logistics"
   });
 
+
   isAction.analytics.track("3sales_account_connected", {
     plan: "spotify",
     accountType: "logistics"
