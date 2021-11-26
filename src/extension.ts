@@ -204,9 +204,17 @@ function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArra
 	});		
 	return snippetArray;
 	}
+	let ilist: number[] = [];
+	function uniqueID(min: number, idList: number[]): number {
 
-let min = 0;
-let max = 999;
+    let id = Math.floor(Math.floor(Math.random()*10000)+100);
+    while(idList.includes(id)){
+        id = Math.floor(Math.floor(Math.random()*10000)+100);
+    };
+    ilist.push(id);
+    return id;
+}
+
 function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null): any[] {
 
 	// 1. find what kind of segment event it is and if it matches the format of a segment event
@@ -219,6 +227,7 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 	let is_page = /(analytics.page)((.|\n|))*?(;\n)/;
 	let is_group = /(analytics.group)((.|\n|))*?(;\n)/;*/
 	
+	let min = 100;
 	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?<=\")|(?<=\'))/g;
 	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\})/g;
 	
@@ -231,7 +240,7 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 		let prop = cleanedCode.match(prop_indicator);
 		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/);
 		let cat: RegExpMatchArray | null = [];
-		let id: string = "";
+		let eventID: string = "";
 		let obj: any = {};
 		if(type?.toString() === "page") {
 			cat = cleanedCode.match(eventName_indicator);
@@ -241,11 +250,13 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 			name = cleanedCode.match(eventName_indicator);
 		};
 		if(name!== null && type!== null) {
-			id = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${Math.floor((Math.random() * (max - min) + min))}`);
-		}
+			
+			let id = uniqueID(min, ilist);
+			eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${id}`);
+		};
 		
 			obj = {
-			eventID: id,
+			eventID: eventID,
 			category: cat?.toString(),	
 			eventName: name?.toString(),
 			code: cleanedCode,
