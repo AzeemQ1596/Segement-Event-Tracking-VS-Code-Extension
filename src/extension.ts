@@ -110,17 +110,35 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	let disposable2 = vscode.commands.registerCommand('segment-event-tracking.webview', () => {
 		
+		// Step 1
 		const panel = vscode.window.createWebviewPanel(
-			'catCoding',
-			'Cat Coding',
+			'segment-event-tracking',
+			'Segment Events Library',
 			vscode.ViewColumn.One,
 			{}
 		  );
-	
-		  // And set its HTML content
-		  panel.webview.html = getWebviewContent();
+
+		  
+		// Get path to resource on disk
+		// Azeem's help needed on finding the path
+		// We should ideally save this data on User's local space
+
+		// Facts: By default, webviews can only access resources in the following locations:
+		// 1. Within your extension's install directory
+		// 2. Within the user's currently active workspace
+		// We can use the WebviewOptions.localResourceRoots to allow access to additional local resources
+		const onDiskPath = vscode.Uri.file(
+			path.join(context.extensionPath, 'media', 'cat.gif') // change these here
+		);
+
+		// And get the special URI to use with the webview
+		const segment_events_json_file = panel.webview.asWebviewUri(onDiskPath);
+
+		panel.webview.html = getWebviewContent(segment_events_json_file);
 		});
-	context.subscriptions.push(disposable2);
+	
+		context.subscriptions.push(disposable2);
+
 }
 
 async function getFiles(): Promise<string[] | null> {
