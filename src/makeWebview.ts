@@ -1,47 +1,56 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { ExtensionContext, StatusBarAlignment, window, StatusBarItem, Selection, workspace, TextEditor, commands } from 'vscode';
 
-export function getWebviewContent() {
-	return `<!DOCTYPE html>
+export function getWebviewContent(json_file: vscode.Uri) {
+    // html
+  // <th> = columns
+  // <td> = contents
+  //let segment_event_rows = loadContent(json_file);
+  // 
+
+  let my_html = `<!DOCTYPE html>
   <html lang="en">
   <head>
 	  <meta charset="UTF-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title>Cat Coding</title>
+    <script src="jquery-3.4.1.min.js"></script>
+	  <title>Your Segment Event Library</title>
   </head>
   <body>
-	  <script>
-
- 
-      $("#jsGrid").jsGrid({
-          height: "90%",
-          width: "100%",
-   
-          filtering: true,
-          editing: true,
-          sorting: true,
-          paging: true,
-          autoload: true,
-   
-          pageSize: 15,
-          pageButtonCount: 5,
-   
-          deleteConfirm: "Do you really want to delete the client?",
-   
-          controller: db,
-   
-          fields: [
-              { name: "Name", type: "text", width: 150 },
-              { name: "Age", type: "number", width: 50 },
-              { name: "Address", type: "text", width: 200 },
-              { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
-              { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
-              { type: "control" }
-          ]
-      });
-   
-    </script>
-  </body>
-  </html>`;
+    <table>
+      <tr>
+        <th>Event ID</th>
+        <th>Type</th>
+        <th>Event Name</th>
+        <th>Property</th>
+        <th>Code</th>
+        <th>File Path</th>
+      </tr>
+      <tr>
+        <td>Alfreds Futterkiste</td>
+        <td>Maria Anders</td>
+        <td>Germany</td>
+        <td>Alfreds Futterkiste</td>
+        <td>Maria Anders</td>
+        <td>Germany</td>
+      </tr></table></body></html>`;
+	return my_html;
   }
+
+// Builds the HTML Table out of myList.
+/*
+export function loadContent(json_file: string) {
+  let html = ``;
+  for (var i = 0; i < json_file; i++) {
+    var row_start$= $(`<tr>`);
+    for (var j = 0; j <json_file[i]; j++) {
+        if 
+    }
+    var row_end$ = $(`</tr>`);
+  }
+
+}
+
+*/
