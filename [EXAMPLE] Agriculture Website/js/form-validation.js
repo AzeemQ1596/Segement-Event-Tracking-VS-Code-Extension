@@ -16,9 +16,9 @@ isAction.analytics.track("7sales_account_connected", {
         
       isAction.analytics.track("9sales_account_connected", { 
         plan: "spotify", accountType: "logistics"});
+    
         isAction.analytics.group("finance");
   
   });
   
-  
-  isAction.analytics.page("page2");
+  isAction.analytics.page("finace", "something");
