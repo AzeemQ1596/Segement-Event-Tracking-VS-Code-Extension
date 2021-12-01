@@ -1,4 +1,16 @@
-{"7sales_account_connected' + plan:'spotify',accountType:'logistics' + form-validation.js": {
+{"logistics' + header-slideshow.js": {
+				"prefix": ["analytics.group"],
+				"body": "analytics.group('logistics');"
+			   },"3sales_account_connected' + plan:'spotify',accountType:'logistics' + header-slideshow.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('3sales_account_connected',{plan:'spotify',accountType:'logistics'});"
+			   },"user' + header-slideshow.js": {
+				"prefix": ["analytics.identify"],
+				"body": "analytics.identify('user');"
+			   },"15sales_account_connected' + plan:'spotify',accountType:'logistics' + hologram-projection.js": {
+				"prefix": ["analytics.track"],
+				"body": "analytics.track('15sales_account_connected',{plan:'spotify',accountType:'logistics'});"
+			   },"7sales_account_connected' + plan:'spotify',accountType:'logistics' + form-validation.js": {
 				"prefix": ["analytics.track"],
 				"body": "analytics.track('7sales_account_connected',{plan:'spotify',accountType:'logistics'});"
 			   },"8sales_account_connected' + plan:'spotify',accountType:'logistics' + form-validation.js": {
@@ -28,16 +40,4 @@
 			   },"null + plan:'premium',accountType:'pagetype' + thumbnail-gallery.js": {
 				"prefix": ["analytics.page"],
 				"body": "analytics.page('page1',{plan:'premium',accountType:'pagetype'});"
-			   },"15sales_account_connected' + plan:'spotify',accountType:'logistics' + hologram-projection.js": {
-				"prefix": ["analytics.track"],
-				"body": "analytics.track('15sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"logistics' + header-slideshow.js": {
-				"prefix": ["analytics.group"],
-				"body": "analytics.group('logistics');"
-			   },"3sales_account_connected' + plan:'spotify',accountType:'logistics' + header-slideshow.js": {
-				"prefix": ["analytics.track"],
-				"body": "analytics.track('3sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"user' + header-slideshow.js": {
-				"prefix": ["analytics.identify"],
-				"body": "analytics.identify('user');"
 			   } }

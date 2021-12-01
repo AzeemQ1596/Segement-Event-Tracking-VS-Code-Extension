@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import path = require('path');
 import * as vscode from 'vscode';
 import { ExtensionContext, StatusBarAlignment, window, StatusBarItem, Selection, workspace, TextEditor, commands } from 'vscode';
 import { getWebviewContent } from './makeWebview.js';
@@ -116,7 +117,9 @@ export async function activate(context: vscode.ExtensionContext) {
 			'segment-event-tracking',
 			'Segment Events Library',
 			vscode.ViewColumn.One,
-			{}
+			{
+				enableScripts: true
+			}
 		  );
 
 		  
@@ -132,11 +135,13 @@ export async function activate(context: vscode.ExtensionContext) {
 		let ws = workspace.workspaceFolders;
 		if(ws!== undefined) { 
 
-			wsPath = ws[0].uri;
-		
-
+			wsPath = ws[0].uri.fsPath;
+			
 		// And get the special URI to use with the webview
-		let segment_events_json_file = panel.webview.asWebviewUri(wsPath);
+		
+		const onDiskPath = vscode.Uri.file(path.join(wsPath, 'segmentEventTable.json')
+		  );
+		let segment_events_json_file = panel.webview.asWebviewUri(onDiskPath);
 
 		panel.webview.html = getWebviewContent(segment_events_json_file);
 		};

@@ -2,74 +2,73 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { ExtensionContext, StatusBarAlignment, window, StatusBarItem, Selection, workspace, TextEditor, commands } from 'vscode';
+import { stringify } from 'querystring';
+//json_file: vscode.Uri)
+export function getWebviewContent(json_Uri: vscode.Uri) {
+   
 
-export function getWebviewContent(json_file_path) {
-    // html
-  // <th> = columns
-  // <td> = contents
-
-  var segment_event_rows_array = require(json_file_path);
-  let segment_event_rows = loadContent(segment_event_rows_array);
-  // 
-
-  let my_html = `<!DOCTYPE html>
-  <html lang="en">
+  vscode.window.showInformationMessage(`makeWebview open`);
+  let file_path = json_Uri.fsPath;
+  let json_array = require('fs').readFileSync(file_path, 'utf-8');
+  let event_array = JSON.parse(`${json_array}`);
+ 
+  
+  return `<html lang="en">
+  
   <head>
-	  <meta charset="UTF-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title>Your Segment Event Library</title>
+      <meta charset="UTF-8">
+      <title>Segment Report</title>
+      <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" </script>
+  < script src = "https://code.jquery.com/ui/1.12.1/jquery-ui.css"
+  </script>
+      </script>
+    
+      
   </head>
+    
   <body>
-    <table>
-      <tr>
-        <th>Event ID</th>
-        <th>Category</th>
-        <th>Event Name</th>
-        <th>Code</th>
-        <th>Type</th>
-        <th>Property</th>
-        <th>File Path</th>
-      </tr>
-      <tr>
-        <td>tr_10s_680</td>
-        <td>null</td>
-        <td>10sales_account_connected</td>
-        <td>analytics.track('10sales_account_connected',{plan:'spotify',accountType:'logistics'});</td>
-        <td>track</td>
-        <td>property":"plan:'spotify',accountType:'logistics'</td>
-        <td>jquery-3.4.1.min.js</td>
-      </tr>` + segment_event_rows +`</table></body></html>`
-	return my_html;
+  <div id="jsGrid"></div>
+  <script>
+    var clients = [
+        { "Name": "Otto Clay", "Age": 25, "Country": 1, "Address": "Ap #897-1459 Quam Avenue", "Married": false },
+        { "Name": "Connor Johnston", "Age": 45, "Country": 2, "Address": "Ap #370-4647 Dis Av.", "Married": true },
+        { "Name": "Lacey Hess", "Age": 29, "Country": 3, "Address": "Ap #365-8835 Integer St.", "Married": false },
+        { "Name": "Timothy Henson", "Age": 56, "Country": 1, "Address": "911-5143 Luctus Ave", "Married": true },
+        { "Name": "Ramona Benton", "Age": 32, "Country": 3, "Address": "Ap #614-689 Vehicula Street", "Married": false }
+    ];
+ 
+    var countries = [
+        { Name: "", Id: 0 },
+        { Name: "United States", Id: 1 },
+        { Name: "Canada", Id: 2 },
+        { Name: "United Kingdom", Id: 3 }
+    ];
+ 
+    $("#jsGrid").jsGrid({
+        width: "100%",
+        height: "400px",
+ 
+        inserting: true,
+        editing: true,
+        sorting: true,
+        paging: true,
+ 
+        data: clients,
+ 
+        fields: [
+            { name: "Name", type: "text", width: 150, validate: "required" },
+            { name: "Age", type: "number", width: 50 },
+            { name: "Address", type: "text", width: 200 },
+            { name: "Country", type: "select", items: countries, valueField: "Id", textField: "Name" },
+            { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+            { type: "control" }
+        ]
+    });
+</script>
+  </body>
+  </html>`;
   }
-
-/*
-{"eventID":"tr_10s_680",
-  "category":"",
-  "eventName":"10sales_account_connected'",
-  "code":"analytics.track('10sales_account_connected',{plan:'spotify',accountType:'logistics'});",
-  "type":"track",
-  "property":"plan:'spotify',accountType:'logistics'",
-  "filePath":"jquery-3.4.1.min.js"},
-
-
-*/
-
-
-// Builds the HTML Table out of myList.
-export function loadContent(json_file) {
-  let html = ``;
-  for (var i = 0; i < json_file; i++) {
-    var row_start$= $(`<tr>`);
-    let content = ``;
-    for (var j = 0; j <json_file[i]; j++) {
-      content + ``;
-        
-    }
-    var row_end$ = $(`</tr>`);
-    let row = row_start$ + content + row_end$;
-    html + row_end$;
-  }
-
-}
-
-
