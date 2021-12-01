@@ -26,7 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			}
 			else {
 					//vscode.window.showInformationMessage(`${filePaths}`);
-					let documentText = await readFiles(filePaths);
+					
 					let wsPath: string;
 					let ws = workspace.workspaceFolders;
 					if(ws!== undefined) { 
@@ -54,16 +54,17 @@ export async function activate(context: vscode.ExtensionContext) {
 						var emptyFlag = 0;
 						var length = 0;
 					
-						for(var index = 0; index < documentText.length; index++) {
+						for(var index = 0; index < filePaths.length; index++) {
 							
 							
-							let code = searchCode(documentText[index]);
-
-							if(code!== null) {
-								
+							let output = await searchCode(filePaths[index]);
+							 
+							if(output!== null) {
+								let code = output[0];
+								let lineNumbers = output[1];
 								let cleanedFilePath = filePaths[index].match(/(?<=\\)(?:.(?!\\))+$/);
-								let snippet = extractSnippet(code, cleanedFilePath);
-								let events = exportToJson(code, cleanedFilePath);
+								let snippet = extractSnippet(code, cleanedFilePath, lineNumbers);
+								let events = exportToJson(code, cleanedFilePath, lineNumbers);
 								
 								snippet_array = snippet_array.concat(snippet);
 								event_array = event_array.concat(events);
@@ -74,7 +75,7 @@ export async function activate(context: vscode.ExtensionContext) {
 							};	
 						};
 						
-						if (emptyFlag === documentText.length) {
+						if (emptyFlag === filePaths.length) {
 					
 							vscode.window.showErrorMessage("No segment functions found in workspace files");
 							console.log("No segment functions found in workspace files");
@@ -170,40 +171,38 @@ async function getFiles(): Promise<string[] | null> {
 		});
 	}
 
-async function readFiles(paths: string[]): Promise<string[]> {
-
-	let docText: string[] = [];
-	for(var index = 0; index < paths.length; index++) { 
-
-		let doc = await workspace.openTextDocument(paths[index]);
-		docText.push(doc.getText());	
-	};
-	return docText;	
-}
-
-function searchCode(docText: string): RegExpMatchArray | null {
+async function searchCode(filePath: string): Promise<[RegExpMatchArray | null, number[]] | null> {
 
 		// regex to see if it's a valid segment event
 	//let segment_indicator = /(analytics.)((.|\n|))*?(\);)/gm;
-	let segment_indicator = new RegExp(/(analytics.)((.|\n|))*?(\);)/, 'g');
+	let segment_indicator = new RegExp(/(analytics.)((.|\r\n|\n|\r)*?)(;)/, 'gm');
 	// see if the code we brought in; docText fits the regex
-	let searchResult: RegExpMatchArray | null;
-	let newDocText = docText.replace(/(\r\n|\n|\r)/g, " ");
-	searchResult = newDocText.match(segment_indicator);
-	console.log(`${searchResult}`);
-	return searchResult;
+	let regexResult: RegExpMatchArray | null;
+	let lineNumbers: number[] = [];
+	let doc = await workspace.openTextDocument(filePath);
+	for(let line = 0; line < doc.lineCount; line++) {
+		let lineText = doc.lineAt(line);
+		if((lineText.text).match(/isAction.analytics./)) {
+			lineNumbers.push(line+1);
+		};
+	};
+	let newDocText = doc.getText();
+	
+	regexResult = newDocText.match(segment_indicator);
+
+	return [regexResult, lineNumbers];
 }
 
-function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null): string[] {
+function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null, lineNumbers: number[]): string[] {
 	
 	let snippetArray: string[] = [];  // declaring an array to hold event details
 	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?<=\")|(?<=\'))/g;
 	let eventType_indicator = /(analytics)((.|\n|))*?(?=\()/g;
 	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\})/g;
 	// if the code has the template of a generic segment event, we now check if they are one of the four types of segment events:
-	code?.forEach(c => {
+	code?.forEach((c, index) => {
 		let cleanedCode = (c.replace(/"/g, "'")).replace(/\s/g,"");
-		
+		let line = lineNumbers[index];
 		let eventType = cleanedCode.match(eventType_indicator);
 		let name: RegExpMatchArray | null = [];
 		let prop = cleanedCode.match(prop_indicator) || "";
@@ -216,7 +215,7 @@ function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArra
 			name = cleanedCode.match(eventName_indicator);
 		};
 		if(prop!=="") {
-			snip = `"${name} + ${prop} + ${filePath}": {
+			snip = `"${name} + ${prop} + ${filePath} + ${line}": {
 				"prefix": ["${eventType}"],
 				"body": "${cleanedCode}"
 			   }`;
@@ -232,8 +231,8 @@ function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArra
 	});		
 	return snippetArray;
 	}
-	let ilist: number[] = [];
-	function uniqueID(min: number, idList: number[]): number {
+let ilist: number[] = [];
+function uniqueID(min: number, idList: number[]): number {
 
     let id = Math.floor(Math.floor(Math.random()*10000)+100);
     while(idList.includes(id)){
@@ -243,7 +242,7 @@ function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArra
     return id;
 }
 
-function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null): any[] {
+function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null, lineNumbers: number[]): any[] {
 
 	// 1. find what kind of segment event it is and if it matches the format of a segment event
 	// 2. if yes, then cut the code down to the properties only
@@ -261,9 +260,10 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 	
 	let event_array: any[] = [];
 	
-	code?.forEach(c => {
+	code?.forEach((c, index) => {
 		
 		let cleanedCode = (c.replace(/"/g, "'")).replace(/\s/g,"");
+		let line = lineNumbers[index];
 		let name: RegExpMatchArray | null = [];
 		let prop = cleanedCode.match(prop_indicator);
 		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/);
@@ -280,12 +280,13 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 		if(name!== null && type!== null) {
 			
 			let id = uniqueID(min, ilist);
-			eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${id}`);
+			eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${line}`);
 		};
 		
 			obj = {
 			eventID: eventID,
-			category: cat?.toString(),	
+			category: cat?.toString(),
+			lineNumber: line,	
 			eventName: name?.toString(),
 			code: cleanedCode,
 			type: type?.toString(),

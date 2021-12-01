@@ -51,7 +51,7 @@ $(document).ready(function() {
     // Set up the classes to change the background image.
     let imageClassArray = new Array("bee", "tractor", "meadow");
     let imageClassIndex = 1;
-    
+    ana
     // Get the container and the overlay.
     let headerContainer = $("#hero-container");
     let headerOverlay = $("#hero-container .overlay");
