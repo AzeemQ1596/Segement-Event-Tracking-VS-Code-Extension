@@ -7,68 +7,68 @@ import { stringify } from 'querystring';
 export function getWebviewContent(json_Uri: vscode.Uri) {
    
 
-  vscode.window.showInformationMessage(`makeWebview open`);
-  let file_path = json_Uri.fsPath;
-  let json_array = require('fs').readFileSync(file_path, 'utf-8');
-  let event_array = JSON.parse(`${json_array}`);
- 
+    vscode.window.showInformationMessage(`Webview open`);
+    let file_path = json_Uri.fsPath;
+    let event_Json = require('fs').readFileSync(file_path, 'utf-8');
+    let event_array = [JSON.parse(`${event_Json}`)];
+    vscode.window.showInformationMessage(`Success! ${event_Json} segment events found`);
   
-  return `<html lang="en">
+    return `<html lang="en">
   
-  <head>
-      <meta charset="UTF-8">
-      <title>Segment Report</title>
-      <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" </script>
-  < script src = "https://code.jquery.com/ui/1.12.1/jquery-ui.css"
-  </script>
-      </script>
+    <head>
+        <meta charset="UTF-8">
+        <title>Segment Report</title>
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+        <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" </script>
+        <script src = "https://code.jquery.com/ui/1.12.1/jquery-ui.css"</script>
     
       
-  </head>
-    
-  <body>
-  <div id="jsGrid"></div>
-  <script>
-    var clients = [
-        { "Name": "Otto Clay", "Age": 25, "Country": 1, "Address": "Ap #897-1459 Quam Avenue", "Married": false },
-        { "Name": "Connor Johnston", "Age": 45, "Country": 2, "Address": "Ap #370-4647 Dis Av.", "Married": true },
-        { "Name": "Lacey Hess", "Age": 29, "Country": 3, "Address": "Ap #365-8835 Integer St.", "Married": false },
-        { "Name": "Timothy Henson", "Age": 56, "Country": 1, "Address": "911-5143 Luctus Ave", "Married": true },
-        { "Name": "Ramona Benton", "Age": 32, "Country": 3, "Address": "Ap #614-689 Vehicula Street", "Married": false }
-    ];
- 
-    var countries = [
-        { Name: "", Id: 0 },
-        { Name: "United States", Id: 1 },
-        { Name: "Canada", Id: 2 },
-        { Name: "United Kingdom", Id: 3 }
-    ];
- 
-    $("#jsGrid").jsGrid({
-        width: "100%",
-        height: "400px",
- 
-        inserting: true,
-        editing: true,
-        sorting: true,
-        paging: true,
- 
-        data: clients,
- 
-        fields: [
-            { name: "Name", type: "text", width: 150, validate: "required" },
-            { name: "Age", type: "number", width: 50 },
-            { name: "Address", type: "text", width: 200 },
-            { name: "Country", type: "select", items: countries, valueField: "Id", textField: "Name" },
-            { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
-            { type: "control" }
-        ]
-    });
-</script>
-  </body>
-  </html>`;
+        </head>
+            
+        <body>
+        <div id="jsGrid"></div>
+        <script>
+            const vscode = acquireVsCodeApi()
+           
+            
+            $("#jsGrid").jsGrid({
+                width: "auto",
+                height: "400px",
+        
+                filtering: true,
+                editing: false,
+                inserting: false,
+                sorting: true,
+                paging: true,
+                autoload: true,
+                controller: {
+
+                   
+                    insertItem: $.noop,
+                    updateItem: $.noop,
+                    deleteItem: $.noop
+                },
+                data: ${event_Json},
+                autosearch: true,  
+                readOnly: true, 
+                fields: [
+                    { name: "eventID", type: "text"},
+                    { name: "eventName", type: "text" },
+                    { name: "category", type: "text"},
+                    { name: "type", type: "text"},
+                    { name: "property", type: "text", width: "auto"},
+                    { name: "filePath", type: "text"},
+                    { name: "lineNumber", type: "number"},
+                    { name: "code", type: "text"}
+                ]
+            }).filterToolbar({
+                "stringResult": true,
+                "searchOperators": true
+            });
+        </script>
+        </body>
+        </html>`;
   }

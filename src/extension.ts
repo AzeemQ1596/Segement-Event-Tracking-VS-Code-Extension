@@ -25,7 +25,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				console.error("Error! Workspace is undefined. Please select a workspace.");
 			}
 			else {
-					//vscode.window.showInformationMessage(`${filePaths}`);
+					
 					
 					let wsPath: string;
 					let ws = workspace.workspaceFolders;
@@ -81,7 +81,7 @@ export async function activate(context: vscode.ExtensionContext) {
 							console.log("No segment functions found in workspace files");
 						}
 						else {
-						
+							//vscode.window.showInformationMessage(`Success! ${event_array} segment events found`);
 							let eventJson = JSON.stringify(event_array);
 							length = length + event_array.length;
 							require('fs').appendFile(wsPath.concat("\\segmentEventTable.json"), eventJson, function (err: any) {
@@ -145,6 +145,17 @@ export async function activate(context: vscode.ExtensionContext) {
 		let segment_events_json_file = panel.webview.asWebviewUri(onDiskPath);
 
 		panel.webview.html = getWebviewContent(segment_events_json_file);
+		panel.webview.onDidReceiveMessage(
+			message => {
+			  switch (message.command) {
+				case 'alert':
+				  vscode.window.showErrorMessage(message.text);
+				  return;
+			  }
+			},
+			undefined,
+			context.subscriptions
+		  );
 		};
 		});
 			
@@ -196,7 +207,7 @@ async function searchCode(filePath: string): Promise<[RegExpMatchArray | null, n
 function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null, lineNumbers: number[]): string[] {
 	
 	let snippetArray: string[] = [];  // declaring an array to hold event details
-	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?<=\")|(?<=\'))/g;
+	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?=\")|(?=\'))/g;
 	let eventType_indicator = /(analytics)((.|\n|))*?(?=\()/g;
 	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\})/g;
 	// if the code has the template of a generic segment event, we now check if they are one of the four types of segment events:
@@ -255,7 +266,7 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 	let is_group = /(analytics.group)((.|\n|))*?(;\n)/;*/
 	
 	let min = 100;
-	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?<=\")|(?<=\'))/g;
+	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?=\")|(?=\'))/g;
 	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\})/g;
 	
 	let event_array: any[] = [];
@@ -272,7 +283,7 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 		let obj: any = {};
 		if(type?.toString() === "page") {
 			cat = cleanedCode.match(eventName_indicator);
-			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?<=\")|(?<=\'))/g);
+			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?=\")|(?=\'))/g);
 		}
 		else{
 			name = cleanedCode.match(eventName_indicator);
@@ -284,14 +295,15 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 		};
 		
 			obj = {
-			eventID: eventID,
-			category: cat?.toString(),
-			lineNumber: line,	
+			eventID: eventID,				
 			eventName: name?.toString(),
-			code: cleanedCode,
+			category: cat?.toString(),
 			type: type?.toString(),
 			property: prop?.toString(),
-			filePath: filePath?.toString()
+			filePath: filePath?.toString(),
+			lineNumber: line,
+			code: cleanedCode,		
+			
 		};
 		
 		event_array.push(obj);
