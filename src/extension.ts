@@ -62,8 +62,9 @@ export async function activate(context: vscode.ExtensionContext) {
 							if(output!== null) {
 								let code = output[0];
 								let lineNumbers = output[1];
-								let cleanedFilePath = filePaths[index].match(/(?<=\\)(?:.(?!\\))+$/);
-								let snippet = extractSnippet(code, cleanedFilePath, lineNumbers);
+								let cleanedFilePath = filePaths[index].replace('\\','\\\\');
+								//let cleanedFilePath = filePaths[index].match(/(?<=\\)(?:.(?!\\))+$/);
+								let snippet = extractSnippet(code, lineNumbers);
 								let events = exportToJson(code, cleanedFilePath, lineNumbers);
 								
 								snippet_array = snippet_array.concat(snippet);
@@ -161,7 +162,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		else if(vscode.window.activeColorTheme.kind  === 2) {
 			colorTheme = 
 			`.jsgrid-header-row>.jsgrid-header-cell {
-				background-color: #282c34 ;      /* orange */
+				background-color: #074687 ;      /* orange */
 				font-family: "Roboto Slab";
 				font-size: 1.2em;
 				color: white;
@@ -172,7 +173,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				color: white;
 			  }
 			  .jsgrid-alt-row>.jsgrid-cell {
-				background-color: #282c34 ;
+				background-color: #24282e ;
 				color: white;
 			  }`;
 			
@@ -221,7 +222,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			else if(theme.kind  === 2) {
 				colorTheme = 
 				`.jsgrid-header-row>.jsgrid-header-cell {
-					background-color: #282c34 ;      /* orange */
+					background-color: #074687 ;      /* orange */
 					font-family: "Roboto Slab";
 					font-size: 1.2em;
 					color: white;
@@ -232,7 +233,7 @@ export async function activate(context: vscode.ExtensionContext) {
 					color: white;
 				  }
 				  .jsgrid-alt-row>.jsgrid-cell {
-					background-color:#282c34 ;
+					background-color:#202227 ;
 					color: white;
 				  }`;
 
@@ -266,9 +267,10 @@ export async function activate(context: vscode.ExtensionContext) {
 			async message => {
 			  switch (message.command) {
 				case 'alert':
-
-				  let filePathUri = await workspace.findFiles(`**/${message.fileName}`);
-				  let filePath = filePathUri[0];
+				  
+				  let filePath: string = (message.path).replace('\\\\','\\');
+				  //let filePathUri = await workspace.findFiles(`**/${(message.fileName).rep}`);
+				  //let filePath = filePathUri[0];
 				  workspace.openTextDocument(filePath).then(async doc => {
 					
 					vscode.window.showTextDocument(doc, vscode.ViewColumn.One, true).then(editor => {
@@ -279,9 +281,8 @@ export async function activate(context: vscode.ExtensionContext) {
 						var newSelection = new vscode.Selection(newPosition, newPosition);
 						let lineRange = new vscode.Range(line, 0, line, 10);
 						editor.selection = newSelection;
-						let docHighlight = new vscode.DocumentHighlight(lineRange, 0);
+						//let docHighlight = new vscode.DocumentHighlight(lineRange, 0);
 						editor.revealRange(lineRange, 1);
-
 					});	
 					
 				  });
@@ -335,7 +336,7 @@ async function searchCode(filePath: string): Promise<[RegExpMatchArray | null, n
 	return [regexResult, lineNumbers];
 }
 
-function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null, lineNumbers: number[]): string[] {
+function extractSnippet(code: RegExpMatchArray | null,  lineNumbers: number[]): string[] {
 	
 	let snippetArray: string[] = [];  // declaring an array to hold event details
 	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?=\")|(?=\'))/g;
@@ -353,41 +354,33 @@ function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArra
 		let snip2: string = ``; 
 		if(type?.toString() === "page") {
 			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?<=\")|(?<=\'))/g);
+			if(name === null) {
+				name = cleanedCode.match(eventName_indicator);
+			}
 		}
 		else{
 			name = cleanedCode.match(eventName_indicator);
 		};
 		if(prop!=="") {
-			snip1 = `"${name} + ${prop} + ${filePath}": {
+			snip1 = `"${name} + ${prop}: {
 				"prefix": ["${eventType}", "${cleanedCode}", "${name}"],
 				"body": "${cleanedCode}"
 			   }`;
 		}
 		else {
-			snip1 = `"${name} + ${filePath}": {
+			snip1 = `"${name}: {
 				"prefix": ["${eventType}", "${cleanedCode}", "${name}"],
 				"body": "${cleanedCode}"
 			   }`;
-		
 		};
-		
 		snippetArray.push(snip1);
 	});		
 	return snippetArray;
 	}
-let ilist: number[] = [];
-function uniqueID(min: number, idList: number[]): number {
 
-    let id = Math.floor(Math.floor(Math.random()*10000)+100);
-    while(idList.includes(id)){
-        id = Math.floor(Math.floor(Math.random()*10000)+100);
-    };
-    ilist.push(id);
-    return id;
-}
 let itr = 0;
 
-function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null, lineNumbers: number[]): any[] {
+function exportToJson(code: RegExpMatchArray | null, filePath: string, lineNumbers: number[]): any[] {
 
 	// 1. find what kind of segment event it is and if it matches the format of a segment event
 	// 2. if yes, then cut the code down to the properties only
@@ -398,8 +391,7 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 	let is_track = /(analytics.track)((.|\n|))*?(;\n)/;
 	let is_page = /(analytics.page)((.|\n|))*?(;\n)/;
 	let is_group = /(analytics.group)((.|\n|))*?(;\n)/;*/
-	
-	let min = 100;
+
 	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?=\")|(?=\'))/g;
 	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\})/g;
 	
@@ -418,29 +410,28 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 		if(type?.toString() === "page") {
 			cat = cleanedCode.match(eventName_indicator);
 			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?=\")|(?=\'))/g);
+			if(name === null) {
+				name = cleanedCode.match(eventName_indicator);
+			}
 		}
 		else{
 			name = cleanedCode.match(eventName_indicator);
 		};
 		if(name!== null && type!== null) {
 			
-			let id = uniqueID(min, ilist);
 			itr = itr + 1;
 			eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${itr}`);
 		};
-		
 			obj = {
 			eventID: eventID,				
 			eventName: name?.toString(),
 			category: cat?.toString(),
 			type: type?.toString(),
 			property: prop?.toString(),
-			fileName: filePath?.toString(),
+			filePath: filePath.toString(),
 			lineNumber: line,
-			code: cleanedCode,		
-			
+			code: cleanedCode,	
 		};
-		
 		event_array.push(obj);
 	});
 	

@@ -10,7 +10,7 @@ export function getWebviewContent(json_Uri: vscode.Uri, colorTheme: string): str
     //let colorTheme: string = ``;
     let file_path = json_Uri.fsPath;
     let event_Json = require('fs').readFileSync(file_path, 'utf-8');
-
+    
     return `<html lang="en">
   
     <head>
@@ -30,7 +30,6 @@ export function getWebviewContent(json_Uri: vscode.Uri, colorTheme: string): str
 
         <style>
             ${colorTheme}
-            .hideCode { display:none; }  
         </style>
 
         <div id="jsGrid"></div>
@@ -41,32 +40,30 @@ export function getWebviewContent(json_Uri: vscode.Uri, colorTheme: string): str
             $("#jsGrid").jsGrid({
     
                 width: "100%",
-                height: "400px",
+                height: "100%",
                 filtering: true,
-                editing: false,
-                inserting: false,
                 sorting: true,
-                table-layout: fixed,
                 clearFilterButton: true, 
                 paging: true,
                 data: ${event_Json},
                 autosearch: true,
                 readOnly: true, 
                 fields: [
-                    { title: "Event ID", name: "eventID", type: "text" },
-                    { title: "Event Name", name: "eventName", type: "text"},
-                    { title: "Category", name: "category", type: "text"},
-                    { title: "Type", name: "type", type: "text"},
-                    { title: "Property", name: "property", type: "text"},
-                    { title: "File Name", name: "fileName", type: "text"},
-                    { title: "Line Number", name: "lineNumber", type: "number"},
+                    { title: "Event ID", name: "eventID", type: "text", width: 50},
+                    { title: "Event name", name: "eventName", type: "text", width: 80},
+                    { title: "Category",name: "category", type: "text", width: 50},
+                    { title: "Type", name: "type", type: "text", width: 25},
+                    { title: "Property", name: "property", type: "text", width: 125},
+                    { title: "File Path", name: "filePath", type: "text", width: 100 },
+                    { title: "Line Number", name: "lineNumber", type: "number", width: 25},
                     { title: "Code", name: "code", type: "text"}
+                
                 ],
                 rowDoubleClick: function(args) { 
                     vscode.postMessage({
                     command: 'alert',
                     line: (args.item).lineNumber,
-                    fileName: (args.item).fileName})
+                    path: (args.item).filePath})
                 }
             
         });
