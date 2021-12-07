@@ -25,7 +25,6 @@ $(document).ready(function() {
     accountType: "logistics"
   });
 
-
   isAction.analytics.track("3sales_account_connected", {
     plan: "spotify",
     accountType: "logistics"
@@ -35,8 +34,9 @@ $(document).ready(function() {
     plan: "spotify",
     accountType: "logistics"
   });
-  
+
+  /*
 isAction.analytics.page("page1", {
     plan: "premium",
     accountType: "pagetype"
-  });
+  });*/

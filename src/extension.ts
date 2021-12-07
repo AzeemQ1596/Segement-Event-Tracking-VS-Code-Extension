@@ -18,46 +18,46 @@ export async function activate(context: vscode.ExtensionContext) {
 	let disposable1 = vscode.commands.registerCommand('segment-event-tracking.track', async() => {
 		// The code you place here will be executed every time your command is executed
 		
-		await getFiles().then(async filePaths => {
-		if(filePaths === null) {
+		let wsPath: string;
+		let ws = workspace.workspaceFolders;
+		if(ws === undefined) { 
 
-				vscode.window.showErrorMessage("Error! Workspace is undefined. Please select a workspace.");
-				console.error("Error! Workspace is undefined. Please select a workspace.");
+			vscode.window.showWarningMessage("Workspace is undefined. Please select a workspace.");
+			console.error("Workspace is undefined. Please select a workspace.");
+		}	
+		else if(ws !== undefined ){
+			wsPath = ws[0].uri.fsPath;	
+			await getFiles().then(async filePaths => {
+			if(filePaths === null) {
+
+				vscode.window.showWarningMessage("No JavaScript or JavaScript React files found in Workspace");
+				console.error("No JavaScript or JavaScript React files found in Workspace");
 			}
 			else {
-					
-					
-					let wsPath: string;
-					let ws = workspace.workspaceFolders;
-					if(ws!== undefined) { 
-
-						wsPath = ws[0].uri.fsPath;
 						
+					//vscode.window.showInformationMessage(`${wsPath}`);
+					var event_array: any[] = [];
+					var snippet_array: any = [];
 
-						//vscode.window.showInformationMessage(`${wsPath}`);
-						var event_array: any[] = [];
-						var snippet_array: any = [];
-
-						require('fs').writeFileSync(wsPath.concat("\\segmentEventTable.json"), "", function (err: any) {
-							if (err) {
-								vscode.window.showErrorMessage("Error! Could not create segmentEventTable.json file");
-								throw err;}
-							console.log('File is created successfully.'); });
+					require('fs').writeFileSync(wsPath.concat("\\segmentEventTable.json"), "", function (err: any) {
+						if (err) {
+							vscode.window.showErrorMessage("Error! Could not create segmentEventTable.json file");
+							throw err;}
+						console.log('File is created successfully.'); });
 						
-						require('fs').writeFileSync(wsPath.concat("\\.vscode\\segmentSnippet.code-snippets"), "{", function (err: any) {
-							if (err) {
-								vscode.window.showErrorMessage("Error! Could not edit segmentSnippet.code-snippets file. Make sure .vscode folder exists in your folder");
-								throw err;}
-							console.log('File is created successfully.'); });
+					require('fs').writeFileSync(wsPath.concat("\\.vscode\\segmentSnippet.code-snippets"), "{", function (err: any) {
+						if (err) {
+							vscode.window.showErrorMessage("Error! Could not edit segmentSnippet.code-snippets file. Make sure .vscode folder exists in your folder");
+							throw err;}
+						console.log('File is created successfully.'); });
 						
 							
-						var emptyFlag = 0;
-						var length = 0;
+					var emptyFlag = 0;
+					var length = 0;
 					
-						for(var index = 0; index < filePaths.length; index++) {
+					for(var index = 0; index < filePaths.length; index++) {
 							
-							
-							let output = await searchCode(filePaths[index]);
+						let output = await searchCode(filePaths[index]);
 							 
 							if(output!== null) {
 								let code = output[0];
@@ -68,7 +68,6 @@ export async function activate(context: vscode.ExtensionContext) {
 								
 								snippet_array = snippet_array.concat(snippet);
 								event_array = event_array.concat(events);
-
 							}
 							else {
 								emptyFlag = emptyFlag + 1;
@@ -99,15 +98,11 @@ export async function activate(context: vscode.ExtensionContext) {
 							vscode.window.showInformationMessage(`Success! ${event_array.length} segment events found`);
 							console.log(`Success!${event_array.length} segment events found`);
 							console.log(`${event_array.length}`);
-						};
-						
-					};
-					
-				};
-				
-			});	
-				
-	});
+						};	
+					};	
+				});
+			};	
+		});
 	
 	context.subscriptions.push(disposable1);
 
@@ -122,8 +117,6 @@ export async function activate(context: vscode.ExtensionContext) {
 				enableScripts: true
 			}
 		  );
-
-		  
 		// Get path to resource on disk
 		// Azeem's help needed on finding the path
 		// We should ideally save this data on User's local space
@@ -143,13 +136,155 @@ export async function activate(context: vscode.ExtensionContext) {
 		const onDiskPath = vscode.Uri.file(path.join(wsPath, 'segmentEventTable.json')
 		  );
 		let segment_events_json_file = panel.webview.asWebviewUri(onDiskPath);
+		
+		let colorTheme: string = ``;
 
-		panel.webview.html = getWebviewContent(segment_events_json_file);
+		if(vscode.window.activeColorTheme.kind === 1) {
+			
+			colorTheme = `.jsgrid-header-row>.jsgrid-header-cell {
+				background-color: #F06923;      /* orange */
+				font-family: "Roboto Slab";
+				font-size: 1.2em;
+				color: black;
+				font-weight: normal;
+			  }
+			  .jsgrid-row>.jsgrid-cell {
+				background-color: white;
+				color: black;
+			  }
+			  .jsgrid-alt-row>.jsgrid-cell {
+				background-color: #F0F0F0;
+				color: black;
+			  }`;
+	
+			}
+		else if(vscode.window.activeColorTheme.kind  === 2) {
+			colorTheme = 
+			`.jsgrid-header-row>.jsgrid-header-cell {
+				background-color: #282c34 ;      /* orange */
+				font-family: "Roboto Slab";
+				font-size: 1.2em;
+				color: white;
+				font-weight: normal;
+			  }
+			  .jsgrid-row>.jsgrid-cell {
+				background-color: #282c34 ;
+				color: white;
+			  }
+			  .jsgrid-alt-row>.jsgrid-cell {
+				background-color: #282c34 ;
+				color: white;
+			  }`;
+			
+			}
+		else if(vscode.window.activeColorTheme.kind  === 3) {
+			colorTheme = 
+			`.jsgrid-header-row>.jsgrid-header-cell {
+				background-color: black;      /* orange */
+				font-family: "Roboto Slab";
+				font-size: 1.2em;
+				color: orange;
+				font-weight: normal;
+			  }
+			  .jsgrid-row>.jsgrid-cell {
+				background-color: black;
+				color: orange;
+			  }
+			  .jsgrid-alt-row>.jsgrid-cell {
+				background-color: black;
+				color: orange;
+			  }`;		
+			};
+
+		panel.webview.html = getWebviewContent(segment_events_json_file, colorTheme);
+		vscode.window.onDidChangeActiveColorTheme(theme => {
+			if(theme.kind === 1) {
+				colorTheme = 
+				`.jsgrid-header-row>.jsgrid-header-cell {
+					background-color: #F06923;      /* orange */
+					font-family: "Roboto Slab";
+					font-size: 1.2em;
+					color: black;
+					font-weight: normal;
+				  }
+				  .jsgrid-row>.jsgrid-cell {
+					background-color: white;
+					color: black;
+				  }
+				  .jsgrid-alt-row>.jsgrid-cell {
+					background-color: #F0F0F0;
+					color: black;
+				  }`;
+			
+				panel.webview.html = getWebviewContent(segment_events_json_file, colorTheme);
+				}
+			else if(theme.kind  === 2) {
+				colorTheme = 
+				`.jsgrid-header-row>.jsgrid-header-cell {
+					background-color: #282c34 ;      /* orange */
+					font-family: "Roboto Slab";
+					font-size: 1.2em;
+					color: white;
+					font-weight: normal;
+				  }
+				  .jsgrid-row>.jsgrid-cell {
+					background-color: #282c34;
+					color: white;
+				  }
+				  .jsgrid-alt-row>.jsgrid-cell {
+					background-color:#282c34 ;
+					color: white;
+				  }`;
+
+				panel.webview.html = getWebviewContent(segment_events_json_file, colorTheme);
+				}
+			else if(theme.kind  === 3) {
+				colorTheme = 
+				`.jsgrid-header-row>.jsgrid-header-cell {
+					background-color: black;      /* orange */
+					font-family: "Roboto Slab";
+					font-size: 1.2em;
+					color: orange;
+					font-weight: normal;
+				  }
+				  .jsgrid-row>.jsgrid-cell {
+					background-color: black;
+					color: orange;
+				  }
+				  .jsgrid-alt-row>.jsgrid-cell {
+					background-color: black;
+					color: orange;
+				  }`;
+
+				panel.webview.html = getWebviewContent(segment_events_json_file, colorTheme);     
+				
+				};
+			});
+
+		//panel.reveal(vscode.ViewColumn.Beside);
 		panel.webview.onDidReceiveMessage(
-			message => {
+			async message => {
 			  switch (message.command) {
 				case 'alert':
-				  vscode.window.showErrorMessage(message.text);
+
+				  let filePathUri = await workspace.findFiles(`**/${message.fileName}`);
+				  let filePath = filePathUri[0];
+				  workspace.openTextDocument(filePath).then(async doc => {
+					
+					vscode.window.showTextDocument(doc, vscode.ViewColumn.One, true).then(editor => {
+						
+						const position = editor.selection.active;
+						let line: number = message.line - 1;
+						var newPosition = position.with(line, 0);
+						var newSelection = new vscode.Selection(newPosition, newPosition);
+						let lineRange = new vscode.Range(line, 0, line, 10);
+						editor.selection = newSelection;
+						let docHighlight = new vscode.DocumentHighlight(lineRange, 0);
+						editor.revealRange(lineRange, 1);
+
+					});	
+					
+				  });
 				  return;
 			  }
 			},
@@ -157,16 +292,12 @@ export async function activate(context: vscode.ExtensionContext) {
 			context.subscriptions
 		  );
 		};
-		});
-			
-	
+	});
 		context.subscriptions.push(disposable2);
-
 }
 
 async function getFiles(): Promise<string[] | null> {
 
-	let paths: string[];
 	return workspace.findFiles('**/*.js' || '**/*.jsx', '').then(files => {
             
         var filePaths: string[] = [];
@@ -184,7 +315,7 @@ async function getFiles(): Promise<string[] | null> {
 
 async function searchCode(filePath: string): Promise<[RegExpMatchArray | null, number[]] | null> {
 
-		// regex to see if it's a valid segment event
+	// regex to see if it's a valid segment event
 	//let segment_indicator = /(analytics.)((.|\n|))*?(\);)/gm;
 	let segment_indicator = new RegExp(/(analytics.)((.|\r\n|\n|\r)*?)(;)/, 'gm');
 	// see if the code we brought in; docText fits the regex
@@ -218,7 +349,8 @@ function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArra
 		let name: RegExpMatchArray | null = [];
 		let prop = cleanedCode.match(prop_indicator) || "";
 		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/);
-		let snip: string = ``; 
+		let snip1: string = ``;
+		let snip2: string = ``; 
 		if(type?.toString() === "page") {
 			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?<=\")|(?<=\'))/g);
 		}
@@ -226,19 +358,20 @@ function extractSnippet(code: RegExpMatchArray | null, filePath: RegExpMatchArra
 			name = cleanedCode.match(eventName_indicator);
 		};
 		if(prop!=="") {
-			snip = `"${name} + ${prop} + ${filePath} + ${line}": {
-				"prefix": ["${eventType}"],
+			snip1 = `"${name} + ${prop} + ${filePath}": {
+				"prefix": ["${eventType}", "${cleanedCode}", "${name}"],
 				"body": "${cleanedCode}"
 			   }`;
 		}
 		else {
-			snip = `"${name} + ${filePath}": {
-				"prefix": ["${eventType}"],
+			snip1 = `"${name} + ${filePath}": {
+				"prefix": ["${eventType}", "${cleanedCode}", "${name}"],
 				"body": "${cleanedCode}"
 			   }`;
+		
 		};
-	
-		snippetArray.push(snip);
+		
+		snippetArray.push(snip1);
 	});		
 	return snippetArray;
 	}
@@ -252,6 +385,7 @@ function uniqueID(min: number, idList: number[]): number {
     ilist.push(id);
     return id;
 }
+let itr = 0;
 
 function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray | null, lineNumbers: number[]): any[] {
 
@@ -291,7 +425,8 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 		if(name!== null && type!== null) {
 			
 			let id = uniqueID(min, ilist);
-			eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${line}`);
+			itr = itr + 1;
+			eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${itr}`);
 		};
 		
 			obj = {
@@ -300,7 +435,7 @@ function exportToJson(code: RegExpMatchArray | null, filePath: RegExpMatchArray 
 			category: cat?.toString(),
 			type: type?.toString(),
 			property: prop?.toString(),
-			filePath: filePath?.toString(),
+			fileName: filePath?.toString(),
 			lineNumber: line,
 			code: cleanedCode,		
 			

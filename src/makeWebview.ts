@@ -4,15 +4,13 @@ import * as path from 'path';
 import { ExtensionContext, StatusBarAlignment, window, StatusBarItem, Selection, workspace, TextEditor, commands } from 'vscode';
 import { stringify } from 'querystring';
 //json_file: vscode.Uri)
-export function getWebviewContent(json_Uri: vscode.Uri) {
+export function getWebviewContent(json_Uri: vscode.Uri, colorTheme: string): string {
    
 
-    vscode.window.showInformationMessage(`Webview open`);
+    //let colorTheme: string = ``;
     let file_path = json_Uri.fsPath;
     let event_Json = require('fs').readFileSync(file_path, 'utf-8');
-    let event_array = [JSON.parse(`${event_Json}`)];
-    vscode.window.showInformationMessage(`Success! ${event_Json} segment events found`);
-  
+
     return `<html lang="en">
   
     <head>
@@ -29,45 +27,49 @@ export function getWebviewContent(json_Uri: vscode.Uri) {
         </head>
             
         <body>
+
+        <style>
+            ${colorTheme}
+            .hideCode { display:none; }  
+        </style>
+
         <div id="jsGrid"></div>
         <script>
-            const vscode = acquireVsCodeApi()
+            const vscode = acquireVsCodeApi();
            
             
             $("#jsGrid").jsGrid({
-                width: "auto",
+    
+                width: "100%",
                 height: "400px",
-        
                 filtering: true,
                 editing: false,
                 inserting: false,
                 sorting: true,
+                table-layout: fixed,
+                clearFilterButton: true, 
                 paging: true,
-                autoload: true,
-                controller: {
-
-                   
-                    insertItem: $.noop,
-                    updateItem: $.noop,
-                    deleteItem: $.noop
-                },
                 data: ${event_Json},
-                autosearch: true,  
+                autosearch: true,
                 readOnly: true, 
                 fields: [
-                    { name: "eventID", type: "text"},
-                    { name: "eventName", type: "text" },
-                    { name: "category", type: "text"},
-                    { name: "type", type: "text"},
-                    { name: "property", type: "text", width: "auto"},
-                    { name: "filePath", type: "text"},
-                    { name: "lineNumber", type: "number"},
-                    { name: "code", type: "text"}
-                ]
-            }).filterToolbar({
-                "stringResult": true,
-                "searchOperators": true
-            });
+                    { title: "Event ID", name: "eventID", type: "text" },
+                    { title: "Event Name", name: "eventName", type: "text"},
+                    { title: "Category", name: "category", type: "text"},
+                    { title: "Type", name: "type", type: "text"},
+                    { title: "Property", name: "property", type: "text"},
+                    { title: "File Name", name: "fileName", type: "text"},
+                    { title: "Line Number", name: "lineNumber", type: "number"},
+                    { title: "Code", name: "code", type: "text"}
+                ],
+                rowDoubleClick: function(args) { 
+                    vscode.postMessage({
+                    command: 'alert',
+                    line: (args.item).lineNumber,
+                    fileName: (args.item).fileName})
+                }
+            
+        });
         </script>
         </body>
         </html>`;
