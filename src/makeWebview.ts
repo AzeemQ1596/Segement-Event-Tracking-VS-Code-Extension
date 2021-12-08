@@ -40,14 +40,32 @@ export function getWebviewContent(json_Uri: vscode.Uri, colorTheme: string): str
             $("#jsGrid").jsGrid({
     
                 width: "100%",
-                height: "100%",
+                height: "auto",
                 filtering: true,
                 sorting: true,
                 clearFilterButton: true, 
                 paging: true,
+                align: "center",
                 data: ${event_Json},
                 autosearch: true,
-                readOnly: true, 
+                readOnly: true,
+                controller: {
+                    loadData: function(filter) {
+                  var result = $.grep(${event_Json}, function(item, idx) {
+                      if(filter !== undefined) {
+                              return (!filter.eventID || item.eventID === filter.eventID || (item.eventID).indexOf(filter.eventID) > -1)
+                              && (!filter.eventName || item.eventName === filter.eventName ||  (item.eventName).indexOf(filter.eventName) > -1)
+                              && (!filter.category || item.category === filter.category || (item.category).indexOf(filter.category) > -1)
+                              && (!filter.type || item.type === filter.type || (item.type).indexOf(filter.type) > -1)
+                              && (item.property === filter.property || !filter.property || (item.property).indexOf(filter.property) > -1)
+                                 && (item.filePath === filter.filePath || !filter.filePath || (item.filePath).indexOf(filter.filePath) > -1)
+                      && (item.lineNumber === filter.lineNumber || !filter.lineNumber)
+                      && (item.code === filter.code || !filter.code || (item.code).indexOf(filter.code) > -1); 
+                      }
+                          });
+                     return result    
+                  }
+                }, 
                 fields: [
                     { title: "Event ID", name: "eventID", type: "text", width: 50},
                     { title: "Event name", name: "eventName", type: "text", width: 80},

@@ -118,9 +118,6 @@ export async function activate(context: vscode.ExtensionContext) {
 				enableScripts: true
 			}
 		  );
-		// Get path to resource on disk
-		// Azeem's help needed on finding the path
-		// We should ideally save this data on User's local space
 
 		// Facts: By default, webviews can only access resources in the following locations:
 		// 1. Within your extension's install directory
@@ -402,8 +399,8 @@ function exportToJson(code: RegExpMatchArray | null, filePath: string, lineNumbe
 		let cleanedCode = (c.replace(/"/g, "'")).replace(/\s/g,"");
 		let line = lineNumbers[index];
 		let name: RegExpMatchArray | null = [];
-		let prop = cleanedCode.match(prop_indicator);
-		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/);
+		let prop = cleanedCode.match(prop_indicator) || "";
+		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/) || "";
 		let cat: RegExpMatchArray | null = [];
 		let eventID: string = "";
 		let obj: any = {};
