@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-isAction.analytics.track("7sales_account_connected", { 
-    plan: "spotify", accountType: "logistics"});
+isAction.analytics.track("sales_account_connected", { 
+    plan: "shopify", accountType: "logistics"});
   
   $(document).ready(function() {
       $("#search-box").submit(function(event) {
@@ -12,13 +12,7 @@ isAction.analytics.track("7sales_account_connected", {
               return false;
           }
       });  
-      isAction.analytics.track("8sales_account_connected", { plan: "spotify",accountType: "logistics"});
-        
-      isAction.analytics.track("9sales_account_connected", { 
-        plan: "spotify", accountType: "logistics"});
-    
+
         isAction.analytics.group("finance");
-  
+      
   });
-  
-  isAction.analytics.page("finace", "something");

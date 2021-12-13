@@ -1,7 +1,7 @@
 isAction.analytics.group("logistics");
 
-isAction.analytics.track("3sales_account_connected", {
-    plan: "spotify",
+isAction.analytics.track("sales_account_connected", {
+    plan: "shopify",
     accountType: "logistics"
   });
 /*****************************************************************************/
@@ -43,7 +43,7 @@ window.addEventListener("load", function() {
     }
 });
 */
-isAction.analytics.identify("user");
+
 /*****************************************************************************/
 /* JavaScript and jQuery Solution */
 /*****************************************************************************/

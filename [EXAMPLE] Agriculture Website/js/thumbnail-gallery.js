@@ -17,26 +17,15 @@ $(document).ready(function() {
                 // attribute as the title/caption
                 return anchor.el.find('img').attr('alt');
             } 
-        }
+        },
+
+
     });    
 });
-      isAction.analytics.track("2sales_account_connected", {
-    plan: "spotify",
-    accountType: "logistics"
-  });
-
-  isAction.analytics.track("3sales_account_connected", {
-    plan: "spotify",
-    accountType: "logistics"
-  });
-
-  isAction.analytics.track("4sales_account_connected", {
-    plan: "spotify",
-    accountType: "logistics"
-  });
-
-  /*
-isAction.analytics.page("page1", {
+     
+isAction.analytics.page("page", {
     plan: "premium",
     accountType: "pagetype"
-  });*/
+  });
+
+  analytics.identify();

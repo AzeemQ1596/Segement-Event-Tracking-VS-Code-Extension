@@ -106,6 +106,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 	
 	context.subscriptions.push(disposable1);
+	
+	//let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
 	let disposable2 = vscode.commands.registerCommand('segment-event-tracking.webview', () => {
 		
@@ -315,15 +317,17 @@ async function searchCode(filePath: string): Promise<[RegExpMatchArray | null, n
 
 	// regex to see if it's a valid segment event
 	//let segment_indicator = /(analytics.)((.|\n|))*?(\);)/gm;
-	let segment_indicator = new RegExp(/(analytics.)((.|\r\n|\n|\r)*?)(;)/, 'gm');
+	let segment_indicator = new RegExp(/(analytics.(track|page|group|identify))((.|\r\n|\n|\r)*?)(;)/, 'gm');
 	// see if the code we brought in; docText fits the regex
 	let regexResult: RegExpMatchArray | null;
 	let lineNumbers: number[] = [];
 	let doc = await workspace.openTextDocument(filePath);
 	for(let line = 0; line < doc.lineCount; line++) {
 		let lineText = doc.lineAt(line);
-		if((lineText.text).match(/isAction.analytics./)) {
+		if((lineText.text).match(/analytics.(track|page|group|identify)/)) {
+		
 			lineNumbers.push(line+1);
+					 
 		};
 	};
 	let newDocText = doc.getText();
@@ -333,22 +337,25 @@ async function searchCode(filePath: string): Promise<[RegExpMatchArray | null, n
 	return [regexResult, lineNumbers];
 }
 
+let itr1 = 0;
+
 function extractSnippet(code: RegExpMatchArray | null,  lineNumbers: number[]): string[] {
 	
 	let snippetArray: string[] = [];  // declaring an array to hold event details
 	let eventName_indicator = /((?<=\(\")|(?<=\(\')).+?((?=\")|(?=\'))/g;
-	let eventType_indicator = /(analytics)((.|\n|))*?(?=\()/g;
+	let eventType_indicator = /(?<=analytics.).*(?=\()/g;
 	let prop_indicator = /(?<=\{)((.|\n|))*?(?=\})/g;
 	// if the code has the template of a generic segment event, we now check if they are one of the four types of segment events:
 	code?.forEach((c, index) => {
 		let cleanedCode = (c.replace(/"/g, "'")).replace(/\s/g,"");
-		let line = lineNumbers[index];
+		//let line = lineNumbers[index];
 		let eventType = cleanedCode.match(eventType_indicator);
-		let name: RegExpMatchArray | null = [];
-		let prop = cleanedCode.match(prop_indicator) || "";
+		let name: RegExpMatchArray | null | string = [];
+		let eventID: string = "";
+		//let prop = cleanedCode.match(prop_indicator) || "";
 		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/);
 		let snip1: string = ``;
-		let snip2: string = ``; 
+		
 		if(type?.toString() === "page") {
 			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?<=\")|(?<=\'))/g);
 			if(name === null) {
@@ -358,24 +365,31 @@ function extractSnippet(code: RegExpMatchArray | null,  lineNumbers: number[]): 
 		else{
 			name = cleanedCode.match(eventName_indicator);
 		};
-		if(prop!=="") {
-			snip1 = `"${name} + ${prop}: {
-				"prefix": ["${eventType}", "${cleanedCode}", "${name}"],
-				"body": "${cleanedCode}"
-			   }`;
-		}
-		else {
-			snip1 = `"${name}: {
-				"prefix": ["${eventType}", "${cleanedCode}", "${name}"],
-				"body": "${cleanedCode}"
-			   }`;
+		if(type!== null) {
+			
+			if(name === null) {
+				
+				name = "";
+				itr1 = itr1 + 1;
+				eventID = type[0].slice(0,2).concat("_").concat(`${itr1}`);
+			}
+			else {
+				itr1 = itr1 + 1;
+				eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${itr1}`);
+			};
+
 		};
+		snip1 = `"${eventID}": {
+			"prefix": ["${name}","${eventID}", "${eventType}","${cleanedCode}"],
+			"body": "${cleanedCode}"
+			}`;
+			
 		snippetArray.push(snip1);
 	});		
 	return snippetArray;
 	}
 
-let itr = 0;
+let itr2 = 0;
 
 function exportToJson(code: RegExpMatchArray | null, filePath: string, lineNumbers: number[]): any[] {
 
@@ -398,10 +412,10 @@ function exportToJson(code: RegExpMatchArray | null, filePath: string, lineNumbe
 		
 		let cleanedCode = (c.replace(/"/g, "'")).replace(/\s/g,"");
 		let line = lineNumbers[index];
-		let name: RegExpMatchArray | null = [];
+		let name: RegExpMatchArray | null | string= [];
 		let prop = cleanedCode.match(prop_indicator) || "";
 		let type = cleanedCode.match(/(?<=analytics.).*(?=\()/) || "";
-		let cat: RegExpMatchArray | null = [];
+		let cat: RegExpMatchArray | null | string= [];
 		let eventID: string = "";
 		let obj: any = {};
 		if(type?.toString() === "page") {
@@ -409,15 +423,26 @@ function exportToJson(code: RegExpMatchArray | null, filePath: string, lineNumbe
 			name = cleanedCode.match(/((?<=\"\,\")|(?<=\'\,\')).+?((?=\")|(?=\'))/g);
 			if(name === null) {
 				name = cleanedCode.match(eventName_indicator);
-			}
+				cat = "";
+			};
 		}
 		else{
 			name = cleanedCode.match(eventName_indicator);
-		};
-		if(name!== null && type!== null) {
 			
-			itr = itr + 1;
-			eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${itr}`);
+		};
+		if(type!== null) {
+			
+			if(name === null) {
+				
+				name = "";
+				itr2 = itr2 + 1;
+				eventID = type[0].slice(0,2).concat("_").concat(`${itr2}`);
+			}
+			else {
+				itr2 = itr2 + 1;
+				eventID = type[0].slice(0,2).concat("_").concat(name[0].slice(0,3)).concat("_").concat(`${itr2}`);
+			};
+
 		};
 			obj = {
 			eventID: eventID,				

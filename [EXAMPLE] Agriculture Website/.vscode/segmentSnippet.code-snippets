@@ -1,43 +1,31 @@
-{"7sales_account_connected + plan:'spotify',accountType:'logistics': {
-				"prefix": ["analytics.track", "analytics.track('7sales_account_connected',{plan:'spotify',accountType:'logistics'});", "7sales_account_connected"],
-				"body": "analytics.track('7sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"8sales_account_connected + plan:'spotify',accountType:'logistics': {
-				"prefix": ["analytics.track", "analytics.track('8sales_account_connected',{plan:'spotify',accountType:'logistics'});", "8sales_account_connected"],
-				"body": "analytics.track('8sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"9sales_account_connected + plan:'spotify',accountType:'logistics': {
-				"prefix": ["analytics.track", "analytics.track('9sales_account_connected',{plan:'spotify',accountType:'logistics'});", "9sales_account_connected"],
-				"body": "analytics.track('9sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"finance: {
-				"prefix": ["analytics.group", "analytics.group('finance');", "finance"],
-				"body": "analytics.group('finance');"
-			   },"something': {
-				"prefix": ["analytics.page", "analytics.page('finace','something');", "something'"],
-				"body": "analytics.page('finace','something');"
-			   },"sales_account_connected + plan:'shopify',accountType:'sales': {
-				"prefix": ["analytics.track", "analytics.track('sales_account_connected',{plan:'shopify',accountType:'sales'});", "sales_account_connected"],
-				"body": "analytics.track('sales_account_connected',{plan:'shopify',accountType:'sales'});"
-			   },"2sales_account_connected + plan:'spotify',accountType:'logistics': {
-				"prefix": ["analytics.track", "analytics.track('2sales_account_connected',{plan:'spotify',accountType:'logistics'});", "2sales_account_connected"],
-				"body": "analytics.track('2sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"3sales_account_connected + plan:'spotify',accountType:'logistics': {
-				"prefix": ["analytics.track", "analytics.track('3sales_account_connected',{plan:'spotify',accountType:'logistics'});", "3sales_account_connected"],
-				"body": "analytics.track('3sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"4sales_account_connected + plan:'spotify',accountType:'logistics': {
-				"prefix": ["analytics.track", "analytics.track('4sales_account_connected',{plan:'spotify',accountType:'logistics'});", "4sales_account_connected"],
-				"body": "analytics.track('4sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"page1 + plan:'premium',accountType:'pagetype': {
-				"prefix": ["analytics.page", "analytics.page('page1',{plan:'premium',accountType:'pagetype'});", "page1"],
-				"body": "analytics.page('page1',{plan:'premium',accountType:'pagetype'});"
-			   },"15sales_account_connected + plan:'spotify',accountType:'logistics': {
-				"prefix": ["analytics.track", "analytics.track('15sales_account_connected',{plan:'spotify',accountType:'logistics'});", "15sales_account_connected"],
-				"body": "analytics.track('15sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"logistics: {
-				"prefix": ["analytics.group", "analytics.group('logistics');", "logistics"],
-				"body": "analytics.group('logistics');"
-			   },"3sales_account_connected + plan:'spotify',accountType:'logistics': {
-				"prefix": ["analytics.track", "analytics.track('3sales_account_connected',{plan:'spotify',accountType:'logistics'});", "3sales_account_connected"],
-				"body": "analytics.track('3sales_account_connected',{plan:'spotify',accountType:'logistics'});"
-			   },"user: {
-				"prefix": ["analytics.identify", "analytics.identify('user');", "user"],
-				"body": "analytics.identify('user');"
-			   } }
+{"tr_sal_1": {
+			"prefix": ["sales_account_connected","tr_sal_1", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'sales'});"],
+			"body": "analytics.track('sales_account_connected',{plan:'shopify',accountType:'sales'});"
+			},"pa_pag_2": {
+			"prefix": ["page","pa_pag_2", "page","analytics.page('page',{plan:'premium',accountType:'pagetype'});"],
+			"body": "analytics.page('page',{plan:'premium',accountType:'pagetype'});"
+			},"id_3": {
+			"prefix": ["","id_3", "identify","analytics.identify();"],
+			"body": "analytics.identify();"
+			},"tr_use_4": {
+			"prefix": ["user-cameback","tr_use_4", "track","analytics.track('user-cameback');"],
+			"body": "analytics.track('user-cameback');"
+			},"tr_kad_5": {
+			"prefix": ["kadira-debug","tr_kad_5", "track","analytics.track('kadira-debug');"],
+			"body": "analytics.track('kadira-debug');"
+			},"tr_sal_6": {
+			"prefix": ["sales_account_connected","tr_sal_6", "track","analytics.track('sales_account_connected',{userId:data.userId,event:eventName,properties:{email:data.email}});"],
+			"body": "analytics.track('sales_account_connected',{userId:data.userId,event:eventName,properties:{email:data.email}});"
+			},"gr_log_7": {
+			"prefix": ["logistics","gr_log_7", "group","analytics.group('logistics');"],
+			"body": "analytics.group('logistics');"
+			},"tr_sal_8": {
+			"prefix": ["sales_account_connected","tr_sal_8", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"],
+			"body": "analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"
+			},"tr_sal_9": {
+			"prefix": ["sales_account_connected","tr_sal_9", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"],
+			"body": "analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"
+			},"gr_fin_10": {
+			"prefix": ["finance","gr_fin_10", "group","analytics.group('finance');"],
+			"body": "analytics.group('finance');"
+			} }
