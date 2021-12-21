@@ -452,7 +452,7 @@ function exportToJson(code: RegExpMatchArray | null, filePath: string, lineNumbe
 			property: prop?.toString(),
 			filePath: filePath.toString(),
 			lineNumber: line,
-			code: cleanedCode,	
+			code: cleanedCode	
 		};
 		event_array.push(obj);
 	});

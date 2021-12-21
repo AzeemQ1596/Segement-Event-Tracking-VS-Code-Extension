@@ -19,7 +19,6 @@ $(document).ready(function() {
             } 
         },
 
-
     });    
 });
      
@@ -28,4 +27,8 @@ isAction.analytics.page("page", {
     accountType: "pagetype"
   });
 
-  analytics.identify();
+analytics.page('page', {plan:'shopify',accountType:'accounting'});
+
+
+
+analytics.identify();
