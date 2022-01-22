@@ -15,7 +15,8 @@ Seca is a code assistant that creates a library of existing Segment events in yo
 
 ## Installing Seca:
 
-Available soon on VSCode 3 Marketplace!
+Download the extension from the Visual Studio Code Marketplace!
+https://marketplace.visualstudio.com/items?itemName=seca.segment-event-tracking
 
 ## How to use Seca:
 
