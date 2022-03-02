@@ -6,7 +6,7 @@ Seca is a code assistant that creates a library of existing Segment events in yo
 
 1. Extracting Segment Events to a Library ✨! Easily extracts goes through all .js or .jsx files in a workspace and extracts Segment events 
 2. Code Assistant to make suggestions of existing code so you can simply paste existing code! 🥰
-3. 
+3. Quickly see all of your Segment Evenets along with their attributes in one place and quickly locate them!
 4. Dynamic Theme switching! Based on your IDE theme type, the report table generated will change theme based on type of theme.
 5. Quickly find Segment events! Double-clicking on a row in the opens to the file and line number in the IDE.
 
@@ -35,11 +35,9 @@ This will open up another tab where a table is generated where users can see at 
 
 1. Make sure you are in a defined Workspace.
 
-2. Extension starts when the 
+2. Extension starts when you run the first command.
 
 3. Every time you add you wish to update your code, you can use just Command/Ctrl + shift + P, then look for Segment: Track Events to refresh the .json file with the new events.
-
-
 
 ## Support
 
