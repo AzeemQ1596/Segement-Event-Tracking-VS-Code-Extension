@@ -4,8 +4,11 @@ Seca is a code assistant that creates a library of existing Segment events in yo
 
 ### Available Features
 
-1. Extracting Segment Events to a Library ✨
+1. Extracting Segment Events to a Library ✨! Easily extracts goes through all .js or .jsx files in a workspace and extracts Segment events 
 2. Code Assistant to make suggestions of existing code so you can simply paste existing code! 🥰
+3. 
+4. Dynamic Theme switching! Based on your IDE theme type, the report table generated will change theme based on type of theme.
+5. Quickly find Segment events! Double-clicking on a row in the opens to the file and line number in the IDE.
 
 ### Seca supports:
 
@@ -15,7 +18,7 @@ Seca is a code assistant that creates a library of existing Segment events in yo
 
 ## Installing Seca:
 
-Download the extension from the Visual Studio Code Marketplace!
+Download the extension from the Visual Studio Code Marketplace!:
 https://marketplace.visualstudio.com/items?itemName=seca.segment-event-tracking
 
 ## How to use Seca:
@@ -28,13 +31,22 @@ After this a snippet file is created where users can easily reuse code. They can
 
 This will open up another tab where a table is generated where users can see at a glance all of the Segment events in their code. Users can search for each field and also double-click each any row and it will open the file and the line that the code is located.
 
-**Refreshing:**
+## Before using
 
-Every time you add you wish to update your code, you can use just Command/Ctrl + shift + P, then look for Segment: Track Events to refresh the .json file with the new events
+1. Make sure you are in a defined Workspace.
+
+2. Extension starts when the 
+
+3. Every time you add you wish to update your code, you can use just Command/Ctrl + shift + P, then look for Segment: Track Events to refresh the .json file with the new events.
+
+
 
 ## Support
+
+Link to the documentation:
+https://docs.google.com/document/d/e/2PACX-1vRdt-suL7a206GDMYWYrmRglzGmCb8Pb7QS97Xoq7VTZ_uWTuQJCtNJFv0O7V1sqg/pub
 
 If you have any questions, please feel free to contact us through the following medium: 
 
 - eunice.choi@queensu.ca
-- syedazeem.quadri@queensu.ca
+- azeem.quadri99@gmail.com
