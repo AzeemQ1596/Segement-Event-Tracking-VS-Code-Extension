@@ -2,6 +2,8 @@
 	"name": "segment-event-tracking",
 	"displayName": "Segment Event Tracking",
 	"description": "Tracking Segement events in JavaScript files",
+	"publisher": "SECA",
+	"id": "seca",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.61.0"
@@ -9,6 +11,10 @@
 	"categories": [
 		"Other"
 	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/AzeemQ1596/Segement-Event-Tracking-VS-Code-Extension.git"
+	  },
 	"activationEvents": [
 		"onCommand:segment-event-tracking.track"
 	],
@@ -21,7 +27,7 @@
 			},
 			{
 				"command": "segment-event-tracking.webview",
-				"title": "Segment Tracker: Show Segment Report"
+				"title": "Segment Tracker: Show Segment Table"
 			}
 		]
 	},
@@ -48,9 +54,6 @@
 		"typescript": "^4.4.3"
 	},
 	"dependencies": {
-		"@types/webrtc": "0.0.31",
-		"git": "^0.1.5",
-		"jQuery": "^1.7.4",
-		"jquery": "^3.6.0"
+	
 	}
 }
