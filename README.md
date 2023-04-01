@@ -2,6 +2,9 @@
 
 Seca is a code assistant that creates a library of existing Segment events in your codebase and makes suggestions of code to reuse your <a href="https://segment.com">Segment code </a>!  
 
+Download the extension from the Visual Studio Code Marketplace!:
+https://marketplace.visualstudio.com/items?itemName=seca.segment-event-tracking
+
 ### Available Features
 
 1. Extracting Segment Events to a Library ✨! Easily extracts goes through all .js or .jsx files in a workspace and extracts Segment events by <b>Ctrl / ⌘ Cmd key + Shift + P</b> and selecting <b>Segment Tracker: Track Segment Events</b>
