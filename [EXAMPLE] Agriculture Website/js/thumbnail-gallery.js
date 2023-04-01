@@ -1,4 +1,6 @@
 
+
+
 isAction.analytics.track("sales_account_connected", {
     plan: "shopify",
     accountType: "sales"
@@ -28,7 +30,3 @@ isAction.analytics.page("page", {
   });
 
 analytics.page('page', {plan:'shopify',accountType:'accounting'});
-
-
-
-analytics.identify();

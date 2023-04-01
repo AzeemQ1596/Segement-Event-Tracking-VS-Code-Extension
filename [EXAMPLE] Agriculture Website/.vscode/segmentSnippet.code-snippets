@@ -1,34 +1,22 @@
-{"tr_sal_1": {
-			"prefix": ["sales_account_connected","tr_sal_1", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'sales'});"],
+{"tr_sal_11": {
+			"prefix": ["sales_account_connected","tr_sal_11", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'sales'});"],
 			"body": "analytics.track('sales_account_connected',{plan:'shopify',accountType:'sales'});"
-			},"pa_pag_2": {
-			"prefix": ["page","pa_pag_2", "page","analytics.page('page',{plan:'premium',accountType:'pagetype'});"],
+			},"pa_pag_12": {
+			"prefix": ["page","pa_pag_12", "page","analytics.page('page',{plan:'premium',accountType:'pagetype'});"],
 			"body": "analytics.page('page',{plan:'premium',accountType:'pagetype'});"
-			},"pa_pag_3": {
-			"prefix": ["page","pa_pag_3", "page","analytics.page('page',{plan:'shopify',accountType:'accounting'});"],
+			},"pa_pag_13": {
+			"prefix": ["page","pa_pag_13", "page","analytics.page('page',{plan:'shopify',accountType:'accounting'});"],
 			"body": "analytics.page('page',{plan:'shopify',accountType:'accounting'});"
-			},"id_4": {
-			"prefix": ["","id_4", "identify","analytics.identify();"],
-			"body": "analytics.identify();"
-			},"tr_use_5": {
-			"prefix": ["user-cameback","tr_use_5", "track","analytics.track('user-cameback');"],
-			"body": "analytics.track('user-cameback');"
-			},"tr_kad_6": {
-			"prefix": ["kadira-debug","tr_kad_6", "track","analytics.track('kadira-debug');"],
-			"body": "analytics.track('kadira-debug');"
-			},"tr_sal_7": {
-			"prefix": ["sales_account_connected","tr_sal_7", "track","analytics.track('sales_account_connected',{userId:data.userId,event:eventName,properties:{email:data.email}});"],
-			"body": "analytics.track('sales_account_connected',{userId:data.userId,event:eventName,properties:{email:data.email}});"
-			},"gr_log_8": {
-			"prefix": ["logistics","gr_log_8", "group","analytics.group('logistics');"],
+			},"gr_log_14": {
+			"prefix": ["logistics","gr_log_14", "group","analytics.group('logistics');"],
 			"body": "analytics.group('logistics');"
-			},"tr_sal_9": {
-			"prefix": ["sales_account_connected","tr_sal_9", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"],
+			},"tr_sal_15": {
+			"prefix": ["sales_account_connected","tr_sal_15", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"],
 			"body": "analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"
-			},"tr_sal_10": {
-			"prefix": ["sales_account_connected","tr_sal_10", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"],
+			},"tr_sal_16": {
+			"prefix": ["sales_account_connected","tr_sal_16", "track","analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"],
 			"body": "analytics.track('sales_account_connected',{plan:'shopify',accountType:'logistics'});"
-			},"gr_fin_11": {
-			"prefix": ["finance","gr_fin_11", "group","analytics.group('finance');"],
+			},"gr_fin_17": {
+			"prefix": ["finance","gr_fin_17", "group","analytics.group('finance');"],
 			"body": "analytics.group('finance');"
 			} }

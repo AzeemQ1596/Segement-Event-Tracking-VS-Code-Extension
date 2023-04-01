@@ -1,14 +1,29 @@
-## Who/What is Seca?
+ ##  Who/What is Seca?
 
-Seca is a code assistant that creates a library of existing Segment events in your codebase and makes suggestions of code to reuse your Segment code!
+Seca is a code assistant that creates a library of existing Segment events in your codebase and makes suggestions of code to reuse your <a href="https://segment.com">Segment code </a>!  
 
 ### Available Features
 
-1. Extracting Segment Events to a Library ✨! Easily extracts goes through all .js or .jsx files in a workspace and extracts Segment events 
+1. Extracting Segment Events to a Library ✨! Easily extracts goes through all .js or .jsx files in a workspace and extracts Segment events by <b>Ctrl / ⌘ Cmd key + Shift + P</b> and selecting <b>Segment Tracker: Track Segment Events</b>
+
+![Alt Text](media/track.gif)
+
 2. Code Assistant to make suggestions of existing code so you can simply paste existing code! 🥰
-3. Quickly see all of your Segment Evenets along with their attributes in one place and quickly locate them!
-4. Dynamic Theme switching! Based on your IDE theme type, the report table generated will change theme based on type of theme.
-5. Quickly find Segment events! Double-clicking on a row in the opens to the file and line number in the IDE.
+
+![Alt Text](media/autocomplete.gif)
+
+3. Quickly see all of your Segment Evenets along with their attributes in one place and quickly locate them! <b>Ctrl / ⌘ Cmd key + Shift + P</b> and selecting <b>Segment Tracker: Show Segment Table</b> Also you can quickly filter out items in the table (uses substring matching)
+
+![Alt Text](media/table.gif)
+
+4. Double-clicking any row on the table opens the file and line number allowing you to quickly locate the code snippet.
+
+![Alt Text](media/locate.gif)
+
+5. Dynamic Theme switching! Based on your IDE theme type, the report table generated will change theme based on type of theme. 
+
+![Alt Text](media/themeSwitch.gif)
+
 
 ### Seca supports:
 
@@ -37,7 +52,7 @@ This will open up another tab where a table is generated where users can see at 
 
 2. Extension starts when you run the first command.
 
-3. Every time you add you wish to update your code, you can use just Command/Ctrl + shift + P, then look for Segment: Track Events to refresh the .json file with the new events.
+3. Every time you add you wish to update your code, you can use just Command/Ctrl + shift + P, then look for "Segment: Track Events to refresh" command to refresh the table
 
 ## Support
 
